@@ -22,3 +22,8 @@ cargo run -- split module.bas
 cargo run -- concat
 ```
 
+---
+
+- [SHELL-ish_Excel_VBA](https://yumayx.github.io/docs/excel/2025/12/21/SHELL-ish_Excel_VBA.html)
+- [syntax](https://github.com/YumaYX/YS1XL/tree/main/syntax)
+
