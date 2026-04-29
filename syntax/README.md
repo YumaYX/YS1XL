@@ -238,7 +238,10 @@ Debug.Print (wb.Worksheets(ws.Name).Cells(1,1).Value)
 ```
 
 > wb.ws と書けないのは、ws は変数名であって、Workbookオブジェクトのメンバーではないから です。Workbookオブジェクトが持つのは Sheets や Worksheets といったコレクションやプロパティであり、任意に作った変数 ws は単なる参照先のラベルにすぎません。
+
+
 宣言1
+
 ```vb
 Dim wb as WorkBook
 Set wb = Workbooks("Book1.xlsx")
