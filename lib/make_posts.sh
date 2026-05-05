@@ -12,6 +12,9 @@ layout: post
 category: 
 title: "$(basename "${f%%.md}")"
 ---
+
+<small>本内容はAIによる自動生成のため、正確性が保証されていません。参考情報としてご利用ください。</small>
+
 $(cat "${f}")
 EOF
 done

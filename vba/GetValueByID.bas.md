@@ -1,18 +1,18 @@
 # GetValueByID
 
-- Purpose: Retrieves a specific value from a worksheet by matching a provided ID value to the designated ID column.
+- 目的: 指定したIDをキーとして、ワークシート内の対応する値（ターゲット列の値）を検索し、取得します。
 
-# Parameters
+# 入力（日本語）
 
-| Parameter Name | Type | Description |
-|-----------------|-----|-------------|
-| ws | Worksheet | The worksheet object where the search will be performed. |
-| idHeader | String | The header name (column title) of the column containing the IDs. |
-| idValue | Variant | The specific ID value that is being searched for. |
-| targetHeader | String | The header name (column title) of the column from which the desired value should be retrieved. |
-| headerRow | Long (Optional) | The row number where the headers are located (defaults to row 1). |
+| 引数名 | 型 | 説明 |
+|--------|----|------|
+| ws | Worksheet | 処理対象とするワークシートを指定します。 |
+| idHeader | String | IDが記載されている列の見出し名（ヘッダー名）を指定します。 |
+| idValue | Variant | 検索したいIDの値（検索キー）を指定します。 |
+| targetHeader | String | 取得したい値が記載されている列の見出し名（ヘッダー名）を指定します。 |
+| headerRow | Long | 見出し行が記載されている行番号です。省略した場合（=1）は1行目として扱われます。 |
 
-# Return Value
+# 出力（日本語）
 
-- Type: Variant
-- Content: The cell value from the target column corresponding to the found ID. Returns an empty string ("") if no match is found or if the required header columns cannot be located.
+- 型: Variant
+- 内容: 検索したIDと一致した行の、ターゲット列（指定した値の列）のセル値が返されます。該当するIDが見つからない場合や、指定されたヘッダー列が存在しない場合は空文字（""）が返されます。

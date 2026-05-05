@@ -1,18 +1,18 @@
-# FunctionName
+# CreateAndDisplayTextMail
 
-- Purpose: Creates and displays a new email message in Outlook with specified recipients, subject, and body.
+- 目的: Outlookを使用して、指定された宛先、件名、本文を含む新しいメールを作成し、それを画面に表示します。
 
-# Input (English)
+# 入力（日本語）
 
-| Argument Name | Type | Description |
-|---|---|---|
-| toAddr | String | The primary recipient email address(es) (can be comma-separated). |
-| ccAddr | String | The CC recipient email address(es) (optional). |
-| bccAddr | String | The BCC recipient email address(es) (optional). |
-| subjTxt | String | The subject line for the email. |
-| bodyTxt | String | The main text body content of the email. |
+| 引数名 | 型 | 説明 |
+|--------|----|------|
+| toAddr | String | 必須。メールの主要な宛先アドレス（カンマ区切りで複数指定可）。 |
+| ccAddr | String | オプション。CCに入れるアドレス（省略可能）。 |
+| bccAddr | String | オプション。BCCに入れるアドレス（省略可能）。 |
+| subjTxt | String | オプション。メールの件名（タイトル）。 |
+| bodyTxt | String | オプション。メールの本文。 |
 
-# Output (English)
+# 出力（日本語）
 
-- Type: None
-- Content: Displays the fully configured email message in the Outlook application window for user review.
+- 型: なし (Void)
+- 内容: 新しく作成されたメールアイテムがOutlook画面に表示されます。

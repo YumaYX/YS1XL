@@ -1,15 +1,15 @@
 # LastUsedRow
 
-- Purpose: Retrieves the row number of the last non-empty cell in a specified column of a worksheet.
+- 目的: 指定されたワークシートの指定列における、データが入力されている最後の行番号を返します。
 
-# Inputs
+# 入力（日本語）
 
-| Argument Name | Type | Description |
-|---------------|------|-------------|
-| ws            | Worksheet | The worksheet object to check for the last row. |
-| col           | Long | The column index to check (e.g., 1 for Column A, 2 for Column B). Defaults to 1. |
+| 引数名 | 型 | 説明 |
+|--------|----|------|
+| ws | Worksheet | 処理を行うワークシートを指定します。 |
+| col | Long | 調査する列番号を指定します。指定しない場合（省略時）はA列（1列目）が使用されます。 |
 
-# Output
+# 出力（日本語）
 
-- Type: Long
-- Content: The row number of the last used data. Returns 0 if the specified column is entirely empty.
+- 型: Long
+- 内容: データが入力されている最後の行番号を返します。指定された列全体が空の場合、0を返します。

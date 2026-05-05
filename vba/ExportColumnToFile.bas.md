@@ -1,17 +1,17 @@
 # ExportColumnToFile
 
-- Purpose: Exports the values of a specified column from a worksheet into a plain text file.
+- 目的: 指定したワークシートの列データをテキストファイルとして書き出します。
 
-# Inputs
+# 入力
 
-| ArgumentName | Type | Description |
-|---------------|-----|-------------|
-| ws            | Worksheet | The worksheet containing the data to be exported. |
-| filePath      | String | The full path and filename where the exported text file will be saved. |
-| colNum        | Long | (Optional) The column number to export. Defaults to 1 (the first column). |
-| delimiter     | String | (Optional) The string used to separate values when writing to the file. Defaults to vbCrLf (new line). |
+| 引数名 | 型 | 説明 |
+|--------|----|------|
+| ws | Worksheet | データを取り出す対象のワークシートを指定します。 |
+| filePath | String | テキストファイルとして保存する先のフルパスを指定します。 |
+| colNum | Long | 書き出す列の番号を指定します（省略時は1列目）。 |
+| delimiter | String | セルの値を繋ぐ区切り文字を指定します（省略時は改行）。 |
 
-# Output
+# 出力
 
-- Type: None (Subroutine)
-- Content: Writes the concatenated values of the specified column to the file specified by filePath.
+- 型: Sub
+- 内容: 指定されたファイルパスに、指定列のデータ内容をテキストファイルとして書き出します。

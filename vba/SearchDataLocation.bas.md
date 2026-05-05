@@ -1,15 +1,15 @@
 # SearchDataLocation
 
-- Purpose: Reads a CSV file, identifies a specified key column, and returns a dictionary mapping unique key values to their first row index in the dataset.
+- 目的: 指定されたCSVファイルから、特定のキー（列）に基づいて一意なデータ値とそれが出現した最初の行番号を辞書として取得します。
 
-# Inputs
+# 入力（日本語）
 
 | 引数名 | 型 | 説明 |
 |--------|----|------|
-| csvFilePath | String | The path to the CSV file to be processed. Defaults to "sample.csv". |
-| targetKey | String | The header name of the key column to use for indexing. Defaults to "id". |
+| csvFilePath | String | 処理対象のCSVファイルのフルパス。指定しない場合は "sample.csv" が使用されます。 |
+| targetKey | String | 辞書に格納するキーとして使用する列のヘッダー名（例: "id"）。 |
 
-# Output
+# 出力（日本語）
 
-- Type: Object (Scripting.Dictionary)
-- Content: A dictionary where keys are the unique values found in the `targetKey` column, and the corresponding values are the 1-based row index of the first occurrence of that key in the data.
+- 型: Scripting.Dictionary (Object)
+- 内容: 指定されたキー列に含まれる一意な値（Key）を、その値がデータ内で最初に現れた行番号（Value）に対応づけた辞書オブジェクト。
