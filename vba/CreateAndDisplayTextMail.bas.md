@@ -1,19 +1,18 @@
-# Function Overview
+# FunctionName
 
-- Name: CreateAndDisplayTextMail
-- Purpose: Creates a new email message in Microsoft Outlook and displays it to the user.
+- Purpose: Creates and displays a new email message in Outlook with specified recipients, subject, and body.
 
-# Inputs
+# Input (English)
 
-| Parameter Name | Type | Description |
+| Argument Name | Type | Description |
 |---|---|---|
-| toAddr | String | The primary recipient's email address(es) (can be comma-separated). |
-| ccAddr | String | The email address(es) for the Carbon Copy recipients (Optional). |
-| bccAddr | String | The email address(es) for the Blind Carbon Copy recipients (Optional). |
-| subjTxt | String | The subject line/title of the email (Optional). |
-| bodyTxt | String | The main content/body text of the email (Optional). |
+| toAddr | String | The primary recipient email address(es) (can be comma-separated). |
+| ccAddr | String | The CC recipient email address(es) (optional). |
+| bccAddr | String | The BCC recipient email address(es) (optional). |
+| subjTxt | String | The subject line for the email. |
+| bodyTxt | String | The main text body content of the email. |
 
-# Output
+# Output (English)
 
-- Type: Void
-- Content: None
+- Type: None
+- Content: Displays the fully configured email message in the Outlook application window for user review.

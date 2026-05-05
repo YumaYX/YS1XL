@@ -10,7 +10,7 @@ do
 ---
 layout: post
 category: 
-title: "$(basename "${f}")"
+title: "$(basename "${f%%.md}")"
 ---
 $(cat "${f}")
 EOF
