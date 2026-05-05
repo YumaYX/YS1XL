@@ -2,9 +2,29 @@
 layout: default
 ---
 
-<h2>POSTS</h2>
-<ul>
-  {% for post in site.posts %}
-    <li><a href="{{ post.url | relative_url }}">{{ post.title }}</a></li>
-  {% endfor %}
-</ul>
+<table>
+  <thead>
+    <tr>
+      <th>Function</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% for post in site.posts %}
+    <tr>
+
+      <td>
+        <a href="{{ post.url | relative_url }}">
+          <strong>{{ post.title }}</strong>
+        </a>
+      </td>
+
+      <td>
+{{ post.content | strip_html | truncate: 120 }}
+      </td>
+
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
