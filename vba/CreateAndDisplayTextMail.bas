@@ -35,3 +35,4 @@ Sub CreateAndDisplayTextMail(toAddr As String, _
         .Display  ' 作成したメールを表示
     End With
 End Sub
+

@@ -109,3 +109,4 @@ Function Mask2CIDR(mask As String) As Integer
 
     Mask2CIDR = cidr
 End Function
+

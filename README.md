@@ -13,13 +13,13 @@ curl -o module.bas.txt https://raw.githubusercontent.com/YumaYX/YS1XL/refs/heads
 ### split
 
 ```sh
-cargo run -- split module.bas
+make split
 ```
 
 ### concat
 
 ```sh
-cargo run -- concat
+make concat
 ```
 
 ---

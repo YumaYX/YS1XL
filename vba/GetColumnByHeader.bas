@@ -14,3 +14,4 @@ Function GetColumnByHeader(ws As Worksheet, header As String, Optional rowNum As
     Next c
     GetColumnByHeader = 0 ' 見つからなければ0
 End Function
+

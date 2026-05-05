@@ -16,3 +16,4 @@ Function ReadUtf8Text(filePath As String) As String
     Set stm = Nothing
 
 End Function
+

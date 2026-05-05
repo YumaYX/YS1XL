@@ -1,3 +1,4 @@
+
 '######### CreateAndDisplayTextMail
 '========================================
 ' 新規メール作成関数（返り値なし）
@@ -423,6 +424,7 @@ Public Sub SaveAttachments( _
     Next i
 End Sub
 
+
 '######### SearchDataLocation
 Function StoreDataLocation(data As Variant, keyIndex As Long) As Object
 
@@ -472,4 +474,3 @@ Function SearchDataLocation(Optional csvFilePath As String = "sample.csv", _
     wb.Close False
 
 End Function
-

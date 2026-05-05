@@ -8,3 +8,4 @@ Function LastUsedRow(ws As Worksheet, Optional col As Long = 1) As Long
         End If
     End With
 End Function
+
