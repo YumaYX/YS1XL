@@ -3,3 +3,4 @@ output.txt
 nohup.out
 _posts/
 _site/
+.jekyll-cache
