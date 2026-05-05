@@ -36,8 +36,8 @@ jobs:
       - name: Build with jekyll
         # Outputs to the './_site' directory by default
         run: |-
-          bundle exec jekyll build
           sh lib/make_posts.sh
+          bundle exec jekyll build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
 
