@@ -2,6 +2,8 @@
 
 Reusable procedures and functions for Excel automation.
 
+<https://yumayx.github.io/YS1XL/>
+
 ## how to use
 
 ```sh
