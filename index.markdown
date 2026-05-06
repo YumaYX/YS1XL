@@ -3,6 +3,9 @@ layout: default
 ---
 
 <section>
+
+<p>再利用可能なExcel VBAの関数集ドキュメント</p>
+
 <a href="https://github.com/YumaYX/YS1XL/">レポジトリ</a>
 </section>
 
