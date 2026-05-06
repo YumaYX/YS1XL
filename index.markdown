@@ -2,6 +2,9 @@
 layout: default
 ---
 
+<section>
+<a href="https://github.com/YumaYX/YS1XL/">レポジトリ</a>
+</section>
 
 <section>
 <ul>
