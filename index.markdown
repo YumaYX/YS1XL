@@ -3,7 +3,7 @@ layout: default
 ---
 
 
-
+<section>
 <ul>
 {% for post in site.posts reversed %}
 <li>
@@ -12,3 +12,4 @@ layout: default
 </li>
 {% endfor %}
 </ul>
+</section>
