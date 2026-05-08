@@ -15,10 +15,9 @@ title: "$(basename "${f%%.md}")"
 
 $(cat "${f}")
 
+[$(basename "${f%%.md}")](https://github.com/YumaYX/YS1XL/blob/main/vba/$(basename "${f%%.md}"))
 
-<https://github.com/YumaYX/YS1XL/>
-
-<small>本内容はAIによる自動生成のため、正確性が保証されていません。参考情報としてご利用ください。</small>
+<small>※本内容はAIによる自動生成のため、正確性が保証されていません。参考情報としてご利用ください。</small>
 
 EOF
 done
