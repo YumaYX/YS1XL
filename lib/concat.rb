@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-vba_path = Dir.glob('vba/*')
+vba_path = Dir.glob('vba/*.bas')
 
 all_crlf = ''
 vba_path.each do |vba_script|
