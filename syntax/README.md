@@ -1,49 +1,55 @@
+# Excel VBA チートシート
+
+## セル操作
 
 - Cells
   `Cells(Y,X)`
 - Range/Cell/Table
   `Range("cell / cell name / table")`
+- エクセルのセルは**1スタート**。
 
-## セル内容削除
-
-セル内容削除
+### セル内容削除
 
 ```vb
 worksheet.Cells.clear
 ```
 
-セル自体の削除（詰める）
+### セル自体の削除（詰める）
 
 ```vb
-Selection.Delete 
+Selection.Delete
 ```
-ファイルの存在有無
+
+## 変数宣言
+
+- 型を宣言しない変数に値を投げるとエラーになる。**事前に型を宣言する。**
+- active の変数は使わない方がいい。
 
 ```vb
-Dim str As String: str = "filename"
-If Dir(str) <> "" Then
-    ' 有り
+' 型宣言
+Dim str As String
+Dim l As Long
+
+' 1行で宣言+代入
+Dim str As String: str = "abcd"
+Dim l As Long: l = 1
+```
+
+## 制御構文
+
+### If
+
+```vb
+If 条件 Then
+    '処理
+ElseIf 条件 Then
+    '処理
 Else
-    ' 無し
-End If
+    '処理
+End if
 ```
 
-ファイルが無いときのみ実行したい処理は、
-
-```vb
-If Dir(str) = "" Then
-    ' 無し
-End If
-```
-ファイル保存するとき、
-
-- ドキュメントフォルダ下
-  - `"book.xlsx"` or `".\book.xlsx"`
-- '実行ファイルと同じ場所
-  - `ThisWorkbook.Path & "book.xlsx"`
-- 絶対パス
-  - `"C:\book.xlsx"`
-- エクセルのセルは１スタート。
+### For
 
 ```vb
 Dim i As Integer
@@ -51,7 +57,19 @@ For i = 1 To 10
     Debug.Print(i)
 Next i
 ```
-## 値渡し`ByVal`
+
+### For Each
+
+```vb
+Dim f As Variant
+For Each f In arr
+    Debug.Print f
+Next f
+```
+
+## 関数定義
+
+### 値渡し `ByVal`
 
 ```vb
 Sub f1 (ByVal str As String)
@@ -61,7 +79,7 @@ End Sub
 Call f1("hello")
 ```
 
-## 参照渡し　`ByRef`（省略時のデフォルト）
+### 参照渡し `ByRef`（省略時のデフォルト）
 
 ```vb
 Sub f2 (ByRef str As String)
@@ -72,9 +90,9 @@ str="hello"
 Call f2(str)
 ```
 
-## 返り値ありパターン
+### 返り値ありパターン
 
-`as 型`をつけるのと、最後関数名に代入。`Set`がいるやつは`Set`。
+`as 型`をつけ、最後に**関数名へ代入**。`Set`がいるやつは`Set`。
 
 ```vb
 Sub f1 () as String
@@ -90,89 +108,10 @@ End Sub
   - `Sub SampleSub(wb As Workbook)`
   - デフォルトが`ByRef`
 - 明らかに型が合致している場合でも、型が合わないエラーが出る。
-  - **事前に型を宣言していない場合は、エラーになる。**　→　変数に投げる予定のあるものは、型を宣言する。
-```vb
-If 条件 Then
-    '処理
-ElseIf 条件 Then
-    '処理
-Else
-    '処理
-End if
-```
-```vb
-sheet_name = "Sheet Name"
-max_row = Worksheets(sheet_name).Cells(Rows.Count, 1).End(xlUp).Row
-```
-
-- Cellsの1は１列目の最大行数ということ。
-キーボードの操作もできる。
-
-```vb
-Sub Saiban()
-  For i = 12 To 34
-    SendKeys (i)
-    SendKeys ("{DOWN}")
-  Next i
-End Sub
-```
-コンソール
-
-```vb
-Debug.print("a")
-```
-
-ダイアログ
-
-```vb
-MsgBox("b")
-```
-自動印刷する時
-
-```vb
-' プリンタのチェック
-MsgBox Application.ActivePrinter
-' プリンタの指定
-Application.ActivePrinter = ""
-' sheetの印刷
-ActiveSheet.PrintOut
-```
-シート名全部に対して、名前置換`before`->`after`
-
-```vb
-Dim i As Long
-For i = 1 To Worksheets.Count
-  sn = Worksheets(i).Name
-  Worksheets(i).Name = WorksheetFunction.Substitute(sn, "before", "after")
-Next
-```
-コンソールに、シート名一覧する。
-
-```vb
-Dim i As Long
-For i = 1 To Worksheets.Count
-    Debug.Print Worksheets(i).Name
-Next
-```
-
-- Workbook :this workbook
-  - `ThisWorkbook`
-- String :location
-  - `ThisWorkbook.Path`
-
-activeの変数は、使わない方がいい。
-
-```vb
-'Dim str As String
-Dim str As String: str = "abcd"
-```
-
-```vb
-'Dim l As long
-Dim l As long: l = 1
-```
 
 ## Array
+
+### 固定配列
 
 ```vb
 Dim arr As Variant
@@ -183,6 +122,27 @@ For Each f In arr
     Debug.Print f
 Next f
 ```
+
+### 可変長（動的）配列 `ReDim`
+
+`ReDim`で大きさを再定義できる。`Preserve`をつけると既存の値を保持しつつ拡張できる。
+
+```vb
+Dim arr() As String
+ReDim arr(0)
+arr(0) = "a"
+
+' 末尾に追加（Preserve で値を保持）
+ReDim Preserve arr(UBound(arr) + 1)
+arr(UBound(arr)) = "b"
+
+Dim i As Long
+For i = 0 To UBound(arr)
+    Debug.Print arr(i)
+Next i
+```
+
+> `Preserve`を省略すると配列が初期化され、既存の値が消える。値を残したいなら必ず`ReDim Preserve`を使う。
 
 ## Hash
 
@@ -225,22 +185,14 @@ Worksheets("Sheet Name")
 Sheets("Sheet Name")
 ```
 
-### workbookと、worksheet指定のルール
+最終行の取得
 
 ```vb
-Dim wb As Workbook
-Dim ws As Worksheet
-Set ws = wb.Sheets("SheetName")
-' wsには、Sheets("SheetName")が代入されるわけではなく、
-' wsには、wb.Sheets("SheetName")が代入されている。
-' wb.wsとは書けない。
-Debug.Print (ws.Cells(1,1).Value)
-'または
-Debug.Print (wb.Worksheets(ws.Name).Cells(1,1).Value)
+sheet_name = "Sheet Name"
+max_row = Worksheets(sheet_name).Cells(Rows.Count, 1).End(xlUp).Row
 ```
 
-> wb.ws と書けないのは、ws は変数名であって、Workbookオブジェクトのメンバーではないから です。Workbookオブジェクトが持つのは Sheets や Worksheets といったコレクションやプロパティであり、任意に作った変数 ws は単なる参照先のラベルにすぎません。
-
+## Workbook
 
 宣言1
 
@@ -255,6 +207,24 @@ Set wb = Workbooks("Book1.xlsx")
 Dim wb As Workbook: Set wb = Workbooks("Book1.xlsx")
 ```
 
+### workbookと、worksheet指定のルール
+
+```vb
+Dim wb As Workbook
+Dim ws As Worksheet
+Set ws = wb.Sheets("SheetName")
+' wsには、Sheets("SheetName")が代入されるわけではなく、
+' wsには、wb.Sheets("SheetName")が代入されている。
+' wb.wsとは書けない。
+Debug.Print (ws.Cells(1,1).Value)
+'または
+Debug.Print (wb.Worksheets(ws.Name).Cells(1,1).Value)
+```
+
+> wb.ws と書けないのは、ws は変数名であって、Workbookオブジェクトのメンバーではないからです。Workbookオブジェクトが持つのは Sheets や Worksheets といったコレクションやプロパティであり、任意に作った変数 ws は単なる参照先のラベルにすぎません。
+
+### ファイルを開く
+
 ```vb
 Dim filename As String
 filename = Application.GetOpenFilename(FileFilter:="Excelファイル,*.xls*,CSVファイル,*.csv")
@@ -265,11 +235,49 @@ Dim ws As Worksheet
 Set ws = wb.Sheets("Sheet1")
 ' 処理
 
-
 wb.Close
 ```
+
+### 特殊参照
+
+- Workbook :this workbook
+  - `ThisWorkbook`
+- String :location
+  - `ThisWorkbook.Path`
+
+## ファイル操作
+
+### ファイルの存在有無
+
 ```vb
-' 列ファイル書き出し(W)
+Dim str As String: str = "filename"
+If Dir(str) <> "" Then
+    ' 有り
+Else
+    ' 無し
+End If
+```
+
+ファイルが無いときのみ実行したい処理は、
+
+```vb
+If Dir(str) = "" Then
+    ' 無し
+End If
+```
+
+### ファイル保存するとき
+
+- ドキュメントフォルダ下
+  - `"book.xlsx"` or `".\book.xlsx"`
+- 実行ファイルと同じ場所
+  - `ThisWorkbook.Path & "book.xlsx"`
+- 絶対パス
+  - `"C:\book.xlsx"`
+
+### 列ファイル書き出し(W)
+
+```vb
 Sub OutputColumn()
   Dim column As Long: column = ActiveCell.column
   Dim ws As Worksheet: Set ws = ActiveSheet
@@ -289,4 +297,61 @@ Sub OutputColumn()
   Next
   Close #1
 End Sub
+```
+
+## 出力・ダイアログ
+
+コンソール
+
+```vb
+Debug.print("a")
+```
+
+ダイアログ
+
+```vb
+MsgBox("b")
+```
+
+## 印刷
+
+```vb
+' プリンタのチェック
+MsgBox Application.ActivePrinter
+' プリンタの指定
+Application.ActivePrinter = ""
+' sheetの印刷
+ActiveSheet.PrintOut
+```
+
+## キーボード操作
+
+```vb
+Sub Saiban()
+  For i = 12 To 34
+    SendKeys (i)
+    SendKeys ("{DOWN}")
+  Next i
+End Sub
+```
+
+## シート一括操作
+
+シート名全部に対して、名前置換`before`->`after`
+
+```vb
+Dim i As Long
+For i = 1 To Worksheets.Count
+  sn = Worksheets(i).Name
+  Worksheets(i).Name = WorksheetFunction.Substitute(sn, "before", "after")
+Next
+```
+
+コンソールに、シート名一覧する。
+
+```vb
+Dim i As Long
+For i = 1 To Worksheets.Count
+    Debug.Print Worksheets(i).Name
+Next
 ```
