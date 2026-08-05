@@ -4,9 +4,8 @@ layout: default
 
 <section>
 
-<p>再利用可能なExcel VBAの関数集ドキュメント</p>
+<p>再利用可能なExcel VBAの関数集ドキュメント: <a href="https://github.com/YumaYX/YS1XL/">レポジトリ</a></p>
 
-<a href="https://github.com/YumaYX/YS1XL/">レポジトリ</a>
 </section>
 
 <section>
