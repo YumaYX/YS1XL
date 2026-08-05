@@ -31,6 +31,7 @@ Function CountValues(ws As Worksheet, Optional col As Long = 1) As Object
 
 End Function
 
+
 '######### CreateAndDisplayTextMail
 '========================================
 ' 新規メール作成関数（返り値なし）
@@ -70,6 +71,7 @@ Sub CreateAndDisplayTextMail(toAddr As String, _
 End Sub
 
 
+
 '######### ExportColumnToFile
 '========================================
 ' 指定列の値をテキストファイルに書き出す
@@ -91,6 +93,7 @@ Sub ExportColumnToFile(ws As Worksheet, _
 End Sub
 
 
+
 '######### GetColumnByHeader
 '========================================
 ' 見出し名から列番号を探す
@@ -107,6 +110,7 @@ Function GetColumnByHeader(ws As Worksheet, header As String, Optional rowNum As
     Next c
     GetColumnByHeader = 0 ' 見つからなければ0
 End Function
+
 
 
 '######### GetColumnValuesAsString
@@ -131,11 +135,13 @@ Function GetColumnValuesAsString(ws As Worksheet, _
 End Function
 
 
+
 '######### GetTimestamp
 Function GetTimestamp() As String
     ' yyyy-mm-dd-HH-MM-ss 形式で現在時刻を返す
     GetTimestamp = Format(Now, "yyyy-mm-dd-HH-MM-ss")
 End Function
+
 
 
 '######### GetValueByID
@@ -172,6 +178,7 @@ Function GetValueByID(ws As Worksheet, _
 End Function
 
 
+
 '######### GetValueByID_Hash
 '========================================
 ' ハッシュでIDから値取得（ID列・取得列は自動検索）
@@ -205,6 +212,7 @@ Function GetValueByID_Hash(ws As Worksheet, _
 End Function
 
 
+
 '######### GlobCollection
 Function GlobCollection(folderPath As String, pattern As String) As Collection
     Dim col As New Collection
@@ -225,10 +233,12 @@ Function GlobCollection(folderPath As String, pattern As String) As Collection
 End Function
 
 
+
 '######### Hello
 Function Hello() As String
     hello = "hello"
 End Function
+
 
 
 '######### IPaddress
@@ -344,6 +354,7 @@ Function Mask2CIDR(mask As String) As Integer
 End Function
 
 
+
 '######### LastUsedRow
 Function LastUsedRow(ws As Worksheet, Optional col As Long = 1) As Long
     With ws
@@ -354,6 +365,7 @@ Function LastUsedRow(ws As Worksheet, Optional col As Long = 1) As Long
         End If
     End With
 End Function
+
 
 
 '######### OpenExcel
@@ -371,6 +383,7 @@ Function OpenExcel() As Workbook
 
     Set OpenExcel = Workbooks.Open(filename)
 End Function
+
 
 
 '######### ReadUtf8Text
@@ -391,6 +404,7 @@ Function ReadUtf8Text(filePath As String) As String
     Set stm = Nothing
 
 End Function
+
 
 
 '######### SaveAttachments
@@ -468,6 +482,7 @@ Public Sub SaveAttachments( _
         End If
     Next i
 End Sub
+
 
 
 

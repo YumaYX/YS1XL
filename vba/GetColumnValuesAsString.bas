@@ -19,3 +19,4 @@ Function GetColumnValuesAsString(ws As Worksheet, _
     GetColumnValuesAsString = result
 End Function
 
+

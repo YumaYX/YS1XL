@@ -29,3 +29,4 @@ Function CountValues(ws As Worksheet, Optional col As Long = 1) As Object
     Set CountValues = d
 
 End Function
+
