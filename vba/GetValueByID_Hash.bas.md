@@ -1,18 +1,29 @@
 # GetValueByID_Hash
 
-- Purpose: Retrieves a specific value from a target column by searching for a matching ID in a designated ID column.
+- 目的: ID をキーに、対象ワークシートから該当するセルの値をハッシュ検索で取得する。
 
-# Inputs
+# 入力（日本語）
 
-| Argument Name | Type | Description |
-|---|---|---|
-| ws | Worksheet | The target worksheet containing the data. |
-| idHeader | String | The header name of the column containing the IDs. |
-| idValue | Variant | The specific ID value that needs to be searched for. |
-| targetHeader | String | The header name of the column from which the value should be retrieved. |
-| headerRow | Long | (Optional) The row number where the headers are located (defaults to 1). |
+| 引数名            | 型        | 説明                                   |
+|-------------------|-----------|----------------------------------------|
+| ws                | Worksheet | 対象のワークシート                     |
+| idHeader          | String    | ID 列の見出し名                        |
+| idValue           | Variant   | 検索する ID の値                      |
+| targetHeader      | String    | 取得したい列の見出し名                 |
+| headerRow（省略可）| Long    | 見出し行番号（省略時は 1）             |
 
-# Output
+# 出力（日本語）
 
-- Type: Variant
-- Content: The value found in the target column corresponding to the matching ID; returns an empty string if no match is found.
+- 型: Variant
+- 内容: 該当セルの値（ID または対象列が見つからなければ "" を返す）。
+
+# 使用例
+
+```vba
+Dim ws As Worksheet
+Set ws = ThisWorkbook.Sheets("Sheet1")
+
+Dim v As Variant
+v = GetValueByID_Hash(ws, "ID", "A001", "名前")
+Debug.Print v
+```

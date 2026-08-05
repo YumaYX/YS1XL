@@ -1,17 +1,26 @@
 # ExportColumnToFile
 
-- 目的: 指定したワークシートの列データをテキストファイルとして書き出します。
+- 目的: 指定列の値をテキストファイルに書き出す。
 
-# 入力
+# 入力（日本語）
 
-| 引数名 | 型 | 説明 |
-|--------|----|------|
-| ws | Worksheet | データを取り出す対象のワークシートを指定します。 |
-| filePath | String | テキストファイルとして保存する先のフルパスを指定します。 |
-| colNum | Long | 書き出す列の番号を指定します（省略時は1列目）。 |
-| delimiter | String | セルの値を繋ぐ区切り文字を指定します（省略時は改行）。 |
+| 引数名       | 型        | 説明                                   |
+|--------------|-----------|----------------------------------------|
+| ws           | Worksheet | 対象のワークシート                     |
+| filePath     | String    | 保存先のフルパス                       |
+| colNum（省略可）| Long    | 書き出す列番号（省略時は 1 = A列）     |
+| delimiter（省略可）| String | 値をつなぐ区切り（省略時は改行 vbCrLf） |
 
-# 出力
+# 出力（日本語）
 
-- 型: Sub
-- 内容: 指定されたファイルパスに、指定列のデータ内容をテキストファイルとして書き出します。
+- 型: なし（Sub）
+- 内容: GetColumnValuesAsString で列の値を連結し、指定パスへ書き出す。
+
+# 使用例
+
+```vba
+Dim ws As Worksheet
+Set ws = ThisWorkbook.Sheets("Sheet1")
+
+ExportColumnToFile ws, "C:\Temp\output.txt", 1
+```

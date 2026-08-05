@@ -1,14 +1,21 @@
 # GetTimestamp
 
-- 目的: 現在の日時を「yyyy-mm-dd-HH-MM-ss」形式の文字列として取得する。
+- 目的: yyyy-mm-dd-HH-MM-ss 形式で現在時刻を返す。
 
-# 入力
+# 入力（日本語）
 
 | 引数名 | 型 | 説明 |
 |--------|----|------|
-| なし | - | 引数なし |
 
-# 出力
+# 出力（日本語）
 
 - 型: String
-- 内容: 現在のシステム日時を示す文字列（例: 2023-10-27-10-30-45）。
+- 内容: 現在日時を yyyy-mm-dd-HH-MM-ss 形式で返す。
+
+# 使用例
+
+```vba
+Dim t As String
+t = GetTimestamp()
+Debug.Print t
+```

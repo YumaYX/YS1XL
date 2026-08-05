@@ -1,15 +1,27 @@
 # GlobCollection
 
-- 目的: Returns a collection containing the full paths of all files that match a specified pattern within a given directory.
+- 目的: 指定フォルダ内のパターンに一致するファイルのフルパス一覧を返す。
 
 # 入力（日本語）
 
-| 引数名 | 型 | 説明 |
-|--------|----|------|
-| folderPath | String | The full path of the directory to search within. |
-| pattern | String | The file pattern (e.g., "*.txt" or "report*.csv") to match. |
+| 引数名     | 型        | 説明                                   |
+|------------|-----------|----------------------------------------|
+| folderPath | String    | 対象フォルダパス（末尾に \ がなくても自動補完） |
+| pattern    | String    | ファイル名のワイルドカードパターン（例: *.txt）|
 
 # 出力（日本語）
 
 - 型: Collection
-- 内容: A collection object where each item is the complete file path of a file found matching the pattern.
+- 内容: パターンに一致したファイルのフルパスを格納した Collection。
+
+# 使用例
+
+```vba
+Dim col As Collection
+Set col = GlobCollection("C:\Temp", "*.txt")
+
+Dim p As Variant
+For Each p In col
+    Debug.Print p
+Next p
+```
