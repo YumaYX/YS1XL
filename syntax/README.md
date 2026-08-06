@@ -3,7 +3,7 @@
 ## セル操作
 
 - Cells
-  `Cells(Y,X)`
+  `Cells(Y↓,X→)`
 - Range/Cell/Table
   `Range("cell / cell name / table")`
 - エクセルのセルは**1スタート**。
