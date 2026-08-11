@@ -1,4 +1,5 @@
 default:
+	bundle install
 	bundle exec jekyll server -H 0.0.0.0 -P 3000
 cat:
 	cat Makefile
