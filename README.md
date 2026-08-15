@@ -14,11 +14,15 @@ curl -o module.bas.txt https://raw.githubusercontent.com/YumaYX/YS1XL/refs/heads
 
 ### split
 
+module.bas -> vba/*.bas
+
 ```sh
 make split
 ```
 
 ### concat
+
+vba/*.bas -> module.bas
 
 ```sh
 make concat
