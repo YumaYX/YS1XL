@@ -1,6 +1,6 @@
 '######### Hello
 Function Hello() As String
-    hello = "hello"
+    Hello = "hello"
 End Function
 
 
