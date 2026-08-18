@@ -24,3 +24,4 @@ Function GetPosition(ws As Worksheet, searchText As String) As Variant
     Next r
 
 End Function
+
