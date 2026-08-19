@@ -1,4 +1,6 @@
 '######### ControlFile
+' If Cp("C:\src\a.txt", "C:\dst\a.txt") Then Debug.Print "コピー成功"
+' If Cp("C:\src\folder", "C:\dst\folder") Then Debug.Print "フォルダも自動判定"
 ' Option Explicit
 
 '==========================================================
@@ -102,6 +104,7 @@ End Function
 '
 ' ファイル / フォルダを自動判定
 '==========================================================
+' If Mv("C:\src\a.txt", "C:\dst\a.txt") Then Debug.Print "移動成功"
 Public Function Mv( _
     ByVal sourcePath As String, _
     ByVal destinationPath As String _
@@ -151,6 +154,7 @@ End Function
 '
 ' ファイル / フォルダを自動判定
 '==========================================================
+' If Rm("C:\src\a.txt") Then Debug.Print "削除成功"
 Public Function Rm( _
     ByVal targetPath As String _
 ) As Boolean

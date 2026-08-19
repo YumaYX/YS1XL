@@ -1,4 +1,6 @@
 '######### GlobCollection
+' Dim col As Collection: Set col = GlobCollection("C:\Temp", "*.txt")
+' For Each f In col: Debug.Print f: Next
 Function GlobCollection(folderPath As String, pattern As String) As Collection
     Dim col As New Collection
     Dim fileName As String

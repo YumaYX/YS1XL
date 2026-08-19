@@ -1,4 +1,6 @@
 '######### CreateAndDisplayTextMail
+' CreateAndDisplayTextMail "taro@example.com", , , "件名", "本文"
+' CreateAndDisplayTextMail "a@b.com; c@d.com", , , "宛先はカンマ区切り可", ""
 '========================================
 ' 新規メール作成関数（返り値なし）
 '----------------------------------------

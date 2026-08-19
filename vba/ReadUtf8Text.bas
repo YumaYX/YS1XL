@@ -1,4 +1,6 @@
 '######### ReadUtf8Text
+' Dim s As String: s = ReadUtf8Text("C:\Temp\file.txt")
+' Debug.Print s   ' UTF-8 のテキスト内容を文字列で取得
 Function ReadUtf8Text(filePath As String) As String
     
     Dim stm As Object

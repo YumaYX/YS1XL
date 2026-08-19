@@ -1,4 +1,6 @@
 '######### ExportColumnToFile
+' Dim ws As Worksheet: Set ws = ThisWorkbook.Sheets("Sheet1")
+' ExportColumnToFile ws, "C:\Temp\out.txt", 1   ' A列を改行区切りで出力
 '========================================
 ' 指定列の値をテキストファイルに書き出す
 ' ws       : 対象ワークシート

@@ -1,4 +1,7 @@
 '######### CountValues
+' Dim ws As Worksheet: Set ws = ThisWorkbook.Sheets("Sheet1")
+' Dim d As Object: Set d = CountValues(ws, 1)
+' Debug.Print d("りんご")   ' "りんご" の出現回数
 '========================================
 ' 列内の値の出現回数を集計
 '----------------------------------------

@@ -1,4 +1,7 @@
 '######### GetColumnByHeader
+' Dim ws As Worksheet: Set ws = ThisWorkbook.Sheets("Sheet1")
+' Dim col As Long: col = GetColumnByHeader(ws, "ID")
+' Debug.Print col              ' 見出し"ID"の列番号（例: 2）
 '========================================
 ' 見出し名から列番号を探す
 ' ws      : 対象ワークシート

@@ -1,4 +1,7 @@
 '######### GetColumnValuesAsString
+' Dim ws As Worksheet: Set ws = ThisWorkbook.Sheets("Sheet1")
+' Dim s As String: s = GetColumnValuesAsString(ws, 1, " / ")
+' Debug.Print s    ' "A1 / A2 / A3 ..." （改行区切りのときは vbCrLf）
 '========================================
 ' 指定列の値を文字列で返す
 ' ws        : 対象ワークシート

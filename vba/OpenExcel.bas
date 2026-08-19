@@ -1,5 +1,5 @@
 '######### OpenExcel
-'# Dim wb As Workbook: Set wb = OpenExcel()
+' Dim wb As Workbook: Set wb = OpenExcel()
 
 Function OpenExcel() As Workbook
     Dim filename As Variant

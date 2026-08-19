@@ -1,4 +1,7 @@
 '######### SearchDataLocation
+' Dim arr As Variant: arr = ThisWorkbook.Sheets("Sheet1").UsedRange.Value
+' Dim loc As Object: Set loc = StoreDataLocation(arr, 1)
+' Debug.Print loc("A001")   ' そのキーを持つ行番号
 Function StoreDataLocation(data As Variant, keyIndex As Long) As Object
 
     Dim dataLocation As Object
@@ -16,6 +19,8 @@ Function StoreDataLocation(data As Variant, keyIndex As Long) As Object
 End Function
 
 
+' Dim loc As Object: Set loc = SearchDataLocation("C:\Temp\sample.csv", "id")
+' Debug.Print loc.Exists("001")   ' True / False
 Function SearchDataLocation(Optional csvFilePath As String = "sample.csv", _
                             Optional targetKey As String = "id") As Object
 

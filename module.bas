@@ -1,5 +1,7 @@
 
 '######### ControlFile
+' If Cp("C:\src\a.txt", "C:\dst\a.txt") Then Debug.Print "コピー成功"
+' If Cp("C:\src\folder", "C:\dst\folder") Then Debug.Print "フォルダも自動判定"
 ' Option Explicit
 
 '==========================================================
@@ -103,6 +105,7 @@ End Function
 '
 ' ファイル / フォルダを自動判定
 '==========================================================
+' If Mv("C:\src\a.txt", "C:\dst\a.txt") Then Debug.Print "移動成功"
 Public Function Mv( _
     ByVal sourcePath As String, _
     ByVal destinationPath As String _
@@ -152,6 +155,7 @@ End Function
 '
 ' ファイル / フォルダを自動判定
 '==========================================================
+' If Rm("C:\src\a.txt") Then Debug.Print "削除成功"
 Public Function Rm( _
     ByVal targetPath As String _
 ) As Boolean
@@ -194,6 +198,9 @@ ErrorHandler:
 
 End Function
 '######### CountValues
+' Dim ws As Worksheet: Set ws = ThisWorkbook.Sheets("Sheet1")
+' Dim d As Object: Set d = CountValues(ws, 1)
+' Debug.Print d("りんご")   ' "りんご" の出現回数
 '========================================
 ' 列内の値の出現回数を集計
 '----------------------------------------
@@ -227,6 +234,8 @@ End Function
 
 
 '######### CreateAndDisplayTextMail
+' CreateAndDisplayTextMail "taro@example.com", , , "件名", "本文"
+' CreateAndDisplayTextMail "a@b.com; c@d.com", , , "宛先はカンマ区切り可", ""
 '========================================
 ' 新規メール作成関数（返り値なし）
 '----------------------------------------
@@ -267,6 +276,8 @@ End Sub
 
 
 '######### ExportColumnToFile
+' Dim ws As Worksheet: Set ws = ThisWorkbook.Sheets("Sheet1")
+' ExportColumnToFile ws, "C:\Temp\out.txt", 1   ' A列を改行区切りで出力
 '========================================
 ' 指定列の値をテキストファイルに書き出す
 ' ws       : 対象ワークシート
@@ -289,6 +300,9 @@ End Sub
 
 
 '######### GetColumnByHeader
+' Dim ws As Worksheet: Set ws = ThisWorkbook.Sheets("Sheet1")
+' Dim col As Long: col = GetColumnByHeader(ws, "ID")
+' Debug.Print col              ' 見出し"ID"の列番号（例: 2）
 '========================================
 ' 見出し名から列番号を探す
 ' ws      : 対象ワークシート
@@ -308,6 +322,9 @@ End Function
 
 
 '######### GetColumnValuesAsString
+' Dim ws As Worksheet: Set ws = ThisWorkbook.Sheets("Sheet1")
+' Dim s As String: s = GetColumnValuesAsString(ws, 1, " / ")
+' Debug.Print s    ' "A1 / A2 / A3 ..." （改行区切りのときは vbCrLf）
 '========================================
 ' 指定列の値を文字列で返す
 ' ws        : 対象ワークシート
@@ -331,6 +348,9 @@ End Function
 
 
 '######### GetPosition
+' Dim ws As Worksheet: Set ws = ThisWorkbook.Sheets("Sheet1")
+' Dim pos As Variant: pos = GetPosition(ws, "商品コード")
+' Debug.Print pos(0) & "," & pos(1)   ' 例: "5,3"（C5）
 Function GetPosition(ws As Worksheet, searchText As String) As Variant
 
     Dim r As Long
@@ -359,6 +379,8 @@ End Function
 
 
 '######### GetTimestamp
+' Dim ts As String: ts = GetTimestamp()
+' Debug.Print ts   ' 2026-08-19-09-30-00
 Function GetTimestamp() As String
     ' yyyy-mm-dd-HH-MM-ss 形式で現在時刻を返す
     GetTimestamp = Format(Now, "yyyy-mm-dd-HH-MM-ss")
@@ -367,6 +389,9 @@ End Function
 
 
 '######### GetValueByID
+' Dim ws As Worksheet: Set ws = ThisWorkbook.Sheets("Sheet1")
+' Dim v As Variant: v = GetValueByID(ws, "ID", 123, "名前")
+' Debug.Print v    ' ID=123 の行の"名前"列の値（見つからなければ ""）
 '========================================
 ' IDから値取得（ID列・取得列は自動検索）
 ' ws           : 対象ワークシート
@@ -402,6 +427,8 @@ End Function
 
 
 '######### GlobCollection
+' Dim col As Collection: Set col = GlobCollection("C:\Temp", "*.txt")
+' For Each f In col: Debug.Print f: Next
 Function GlobCollection(folderPath As String, pattern As String) As Collection
     Dim col As New Collection
     Dim fileName As String
@@ -423,6 +450,8 @@ End Function
 
 
 '######### Hello
+' ' => "hello" を返す
+' Debug.Print Hello()          ' hello
 Function Hello() As String
     Hello = "hello"
 End Function
@@ -430,6 +459,8 @@ End Function
 
 
 '######### IPaddress
+' Debug.Print IsValidIPAddress("192.168.0.1")       ' True
+' Debug.Print IsValidIPAddress("192.168.0.999")     ' False
 Function IsValidIPAddress(ByVal ip As String) As Boolean
     Dim parts() As String
     Dim i As Integer
@@ -452,6 +483,8 @@ Function IsValidIPAddress(ByVal ip As String) As Boolean
     IsValidIPAddress = True
 End Function
 
+' Debug.Print IsValidSubnetMask("255.255.255.0")    ' True
+' Debug.Print IsValidSubnetMask("255.0.255.0")      ' False（1の連続でない）
 Function IsValidSubnetMask(ByVal mask As String) As Boolean
     Dim parts() As String
     Dim i As Integer
@@ -479,6 +512,8 @@ Function IsValidSubnetMask(ByVal mask As String) As Boolean
     IsValidSubnetMask = True
 End Function
 
+' Debug.Print IsValidNetworkAddress("192.168.0.1", "255.255.255.0")   ' True
+' Debug.Print IsValidNetworkAddress("192.168.1.1", "255.255.255.0")   ' False
 Function IsValidNetworkAddress(ByVal ip As String, ByVal mask As String) As Boolean
     Dim ipParts() As String
     Dim maskParts() As String
@@ -499,6 +534,8 @@ Function IsValidNetworkAddress(ByVal ip As String, ByVal mask As String) As Bool
     IsValidNetworkAddress = True
 End Function
 
+' Debug.Print CIDR2Mask(24)   ' 255.255.255.0
+' Debug.Print CIDR2Mask(8)    ' 255.0.0.0
 Function CIDR2Mask(cidr As Integer) As String
     Dim i As Integer
     Dim mask(3) As Integer
@@ -521,6 +558,8 @@ Function CIDR2Mask(cidr As Integer) As String
     CIDR2Mask = mask(0) & "." & mask(1) & "." & mask(2) & "." & mask(3)
 End Function
 
+' Debug.Print Mask2CIDR("255.255.255.0")   ' 24
+' Debug.Print Mask2CIDR("255.0.0.0")       ' 8
 Function Mask2CIDR(mask As String) As Integer
     Dim parts() As String
     Dim i As Integer
@@ -544,6 +583,9 @@ End Function
 
 
 '######### LastUsedRow
+' Dim ws As Worksheet: Set ws = ThisWorkbook.Sheets("Sheet1")
+' Dim n As Long: n = LastUsedRow(ws)      ' A列の最終使用行
+' Debug.Print n                           ' 例: 100
 Function LastUsedRow(ws As Worksheet, Optional col As Long = 1) As Long
     With ws
         If Application.WorksheetFunction.CountA(.Columns(col)) = 0 Then
@@ -557,7 +599,7 @@ End Function
 
 
 '######### OpenExcel
-'# Dim wb As Workbook: Set wb = OpenExcel()
+' Dim wb As Workbook: Set wb = OpenExcel()
 
 Function OpenExcel() As Workbook
     Dim filename As Variant
@@ -575,6 +617,8 @@ End Function
 
 
 '######### ReadUtf8Text
+' Dim s As String: s = ReadUtf8Text("C:\Temp\file.txt")
+' Debug.Print s   ' UTF-8 のテキスト内容を文字列で取得
 Function ReadUtf8Text(filePath As String) As String
     
     Dim stm As Object
@@ -675,6 +719,9 @@ End Sub
 
 
 '######### SearchDataLocation
+' Dim arr As Variant: arr = ThisWorkbook.Sheets("Sheet1").UsedRange.Value
+' Dim loc As Object: Set loc = StoreDataLocation(arr, 1)
+' Debug.Print loc("A001")   ' そのキーを持つ行番号
 Function StoreDataLocation(data As Variant, keyIndex As Long) As Object
 
     Dim dataLocation As Object
@@ -692,6 +739,8 @@ Function StoreDataLocation(data As Variant, keyIndex As Long) As Object
 End Function
 
 
+' Dim loc As Object: Set loc = SearchDataLocation("C:\Temp\sample.csv", "id")
+' Debug.Print loc.Exists("001")   ' True / False
 Function SearchDataLocation(Optional csvFilePath As String = "sample.csv", _
                             Optional targetKey As String = "id") As Object
 

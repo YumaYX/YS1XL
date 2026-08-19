@@ -1,4 +1,6 @@
 '######### IPaddress
+' Debug.Print IsValidIPAddress("192.168.0.1")       ' True
+' Debug.Print IsValidIPAddress("192.168.0.999")     ' False
 Function IsValidIPAddress(ByVal ip As String) As Boolean
     Dim parts() As String
     Dim i As Integer
@@ -21,6 +23,8 @@ Function IsValidIPAddress(ByVal ip As String) As Boolean
     IsValidIPAddress = True
 End Function
 
+' Debug.Print IsValidSubnetMask("255.255.255.0")    ' True
+' Debug.Print IsValidSubnetMask("255.0.255.0")      ' False（1の連続でない）
 Function IsValidSubnetMask(ByVal mask As String) As Boolean
     Dim parts() As String
     Dim i As Integer
@@ -48,6 +52,8 @@ Function IsValidSubnetMask(ByVal mask As String) As Boolean
     IsValidSubnetMask = True
 End Function
 
+' Debug.Print IsValidNetworkAddress("192.168.0.1", "255.255.255.0")   ' True
+' Debug.Print IsValidNetworkAddress("192.168.1.1", "255.255.255.0")   ' False
 Function IsValidNetworkAddress(ByVal ip As String, ByVal mask As String) As Boolean
     Dim ipParts() As String
     Dim maskParts() As String
@@ -68,6 +74,8 @@ Function IsValidNetworkAddress(ByVal ip As String, ByVal mask As String) As Bool
     IsValidNetworkAddress = True
 End Function
 
+' Debug.Print CIDR2Mask(24)   ' 255.255.255.0
+' Debug.Print CIDR2Mask(8)    ' 255.0.0.0
 Function CIDR2Mask(cidr As Integer) As String
     Dim i As Integer
     Dim mask(3) As Integer
@@ -90,6 +98,8 @@ Function CIDR2Mask(cidr As Integer) As String
     CIDR2Mask = mask(0) & "." & mask(1) & "." & mask(2) & "." & mask(3)
 End Function
 
+' Debug.Print Mask2CIDR("255.255.255.0")   ' 24
+' Debug.Print Mask2CIDR("255.0.0.0")       ' 8
 Function Mask2CIDR(mask As String) As Integer
     Dim parts() As String
     Dim i As Integer

@@ -1,4 +1,7 @@
 '######### GetPosition
+' Dim ws As Worksheet: Set ws = ThisWorkbook.Sheets("Sheet1")
+' Dim pos As Variant: pos = GetPosition(ws, "商品コード")
+' Debug.Print pos(0) & "," & pos(1)   ' 例: "5,3"（C5）
 Function GetPosition(ws As Worksheet, searchText As String) As Variant
 
     Dim r As Long

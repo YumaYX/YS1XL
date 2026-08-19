@@ -1,4 +1,7 @@
 '######### GetValueByID
+' Dim ws As Worksheet: Set ws = ThisWorkbook.Sheets("Sheet1")
+' Dim v As Variant: v = GetValueByID(ws, "ID", 123, "名前")
+' Debug.Print v    ' ID=123 の行の"名前"列の値（見つからなければ ""）
 '========================================
 ' IDから値取得（ID列・取得列は自動検索）
 ' ws           : 対象ワークシート
