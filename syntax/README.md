@@ -192,6 +192,14 @@ sheet_name = "Sheet Name"
 max_row = Worksheets(sheet_name).Cells(Rows.Count, 1).End(xlUp).Row
 ```
 
+最右列の取得
+
+```vb
+Dim lastCol As Long
+
+lastCol = Worksheets(sheet_name).Cells(1, Columns.Count).End(xlToLeft).Column
+```
+
 ## Workbook
 
 宣言1
