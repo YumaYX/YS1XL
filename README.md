@@ -2,7 +2,8 @@
 
 Reusable procedures and functions for Excel automation.
 
-[Documents - https://yumayx.github.io/YS1XL/](https://yumayx.github.io/YS1XL/)
+- [Documents - https://yumayx.github.io/YS1XL/](https://yumayx.github.io/YS1XL/)
+- [Syntax](https://github.com/YumaYX/YS1XL/blob/main/syntax/README.md)
 
 ## how to use
 
@@ -27,9 +28,3 @@ vba/*.bas -> module.bas
 ```sh
 make concat
 ```
-
----
-
-- [SHELL-ish_Excel_VBA](https://yumayx.github.io/docs/excel/2025/12/21/SHELL-ish_Excel_VBA.html)
-- [syntax](https://github.com/YumaYX/YS1XL/tree/main/syntax)
-
