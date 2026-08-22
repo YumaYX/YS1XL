@@ -20,3 +20,4 @@ Function GlobCollection(folderPath As String, pattern As String) As Collection
 End Function
 
 
+

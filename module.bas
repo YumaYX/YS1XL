@@ -197,6 +197,7 @@ ErrorHandler:
     Rm = False
 
 End Function
+
 '######### CountValues
 ' Dim ws As Worksheet: Set ws = ThisWorkbook.Sheets("Sheet1")
 ' Dim d As Object: Set d = CountValues(ws, 1)
@@ -231,6 +232,7 @@ Function CountValues(ws As Worksheet, Optional col As Long = 1) As Object
     Set CountValues = d
 
 End Function
+
 
 
 '######### CreateAndDisplayTextMail
@@ -272,6 +274,7 @@ Sub CreateAndDisplayTextMail(toAddr As String, _
         .Display  ' 作成したメールを表示
     End With
 End Sub
+
 
 
 
@@ -329,6 +332,7 @@ Sub ExportColumnToFile(ws As Worksheet, _
     Close #fNum
 End Sub
 
+
 '######### GetTimestamp
 ' Dim ts As String: ts = GetTimestamp()
 ' Debug.Print ts   ' 2026-08-19-09-30-00
@@ -336,6 +340,7 @@ Function GetTimestamp() As String
     ' yyyy-mm-dd-HH-MM-ss 形式で現在時刻を返す
     GetTimestamp = Format(Now, "yyyy-mm-dd-HH-MM-ss")
 End Function
+
 
 
 
@@ -362,12 +367,14 @@ End Function
 
 
 
+
 '######### Hello
 ' ' => "hello" を返す
 ' Debug.Print Hello()          ' hello
 Function Hello() As String
     Hello = "hello"
 End Function
+
 
 
 
@@ -495,6 +502,7 @@ End Function
 
 
 
+
 '######### LastUsedRow
 ' Dim ws As Worksheet: Set ws = ThisWorkbook.Sheets("Sheet1")
 ' Dim n As Long: n = LastUsedRow(ws)      ' A列の最終使用行
@@ -508,6 +516,7 @@ Function LastUsedRow(ws As Worksheet, Optional col As Long = 1) As Long
         End If
     End With
 End Function
+
 
 
 
@@ -526,6 +535,7 @@ Function OpenExcel() As Workbook
 
     Set OpenExcel = Workbooks.Open(filename)
 End Function
+
 
 
 
@@ -549,6 +559,7 @@ Function ReadUtf8Text(filePath As String) As String
     Set stm = Nothing
 
 End Function
+
 
 
 
@@ -631,6 +642,7 @@ End Sub
 
 
 
+
 '######### SearchDataLocation
 ' Dim arr As Variant: arr = ThisWorkbook.Sheets("Sheet1").UsedRange.Value
 ' Dim loc As Object: Set loc = StoreDataLocation(arr, 1)
@@ -685,6 +697,7 @@ Function SearchDataLocation(Optional csvFilePath As String = "sample.csv", _
     wb.Close False
 
 End Function
+
 
 '######### SearchSheet
 ' ワークシート内の検索・値取得 統合モジュール
@@ -787,6 +800,7 @@ Function GetValueByID(ws As Worksheet, _
         End If
     Next r
 End Function
+
 
 '######### SelectFolder
 Function SelectFolder() As String
