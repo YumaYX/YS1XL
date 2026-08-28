@@ -368,64 +368,6 @@ End Function
 
 
 
-'######### Grep
-' 指定列を走査し、キーワードに一致するセルの値をイミディエイトに出力する
-'
-' Dim ws As Worksheet: Set ws = ThisWorkbook.Sheets("Sheet1")
-' Grep ws, "りんご"         ' A列から部分一致で検索して出力
-' Grep ws, "A001", 2        ' B列から検索（省略時はA列）
-' Grep ws, "山田", 1, 2     ' A列を完全一致で検索
-'========================================
-' キーワードでセルの値を検索し、一致した値を出力（grep風）
-' ws       : 対象ワークシート
-' keyword  : 検索キーワード
-' col      : 対象列番号（省略時: 1 = A列）
-' matchMode: 一致モード（省略時: 1）
-'            1=部分一致 / 2=完全一致 / 3=前方一致 / 4=後方一致
-'            （すべて大文字小文字を区別しない）
-' 戻り値   : なし（一致した値を Debug.Print で出力）
-'========================================
-Sub Grep(ws As Worksheet, _
-         keyword As String, _
-         Optional col As Long = 1, _
-         Optional matchMode As Long = 1)
-
-    Dim lastRow As Long: lastRow = ws.Cells(ws.Rows.Count, col).End(xlUp).Row
-
-    Dim r As Long
-    Dim v As Variant
-    Dim s As String
-    Dim k As String: k = LCase$(keyword)
-
-    For r = 1 To lastRow
-        v = ws.Cells(r, col).Value
-        If Not IsError(v) Then ' エラー値回避
-            s = LCase$(CStr(v))
-            Select Case matchMode
-                Case 2
-                    If s = k Then Debug.Print CStr(v)
-                Case 3
-                    If Left$(s, Len(k)) = k Then Debug.Print CStr(v)
-                Case 4
-                    If Right$(s, Len(k)) = k Then Debug.Print CStr(v)
-                Case Else ' 1=部分一致
-                    If InStr(s, k) > 0 Then Debug.Print CStr(v)
-            End Select
-        End If
-    Next r
-
-End Sub
-
-'######### Hello
-' ' => "hello" を返す
-' Debug.Print Hello()          ' hello
-Function Hello() As String
-    Hello = "hello"
-End Function
-
-
-
-
 '######### IPaddress
 ' Debug.Print IsValidIPAddress("192.168.0.1")       ' True
 ' Debug.Print IsValidIPAddress("192.168.0.999")     ' False
@@ -691,62 +633,6 @@ End Sub
 
 
 
-'######### SearchDataLocation
-' Dim arr As Variant: arr = ThisWorkbook.Sheets("Sheet1").UsedRange.Value
-' Dim loc As Object: Set loc = StoreDataLocation(arr, 1)
-' Debug.Print loc("A001")   ' そのキーを持つ行番号
-Function StoreDataLocation(data As Variant, keyIndex As Long) As Object
-
-    Dim dataLocation As Object
-    Set dataLocation = CreateObject("Scripting.Dictionary")
-
-    Dim i As Long
-    Dim key As String
-    Dim idx As Long
-
-    For i = 1 To UBound(data, 1)
-        key = CStr(data(i, keyIndex))
-        dataLocation(key) = IIf(dataLocation.Exists(key), 1, i)
-    Next i
-    Set StoreDataLocation = dataLocation
-End Function
-
-
-' Dim loc As Object: Set loc = SearchDataLocation("C:\Temp\sample.csv", "id")
-' Debug.Print loc.Exists("001")   ' True / False
-Function SearchDataLocation(Optional csvFilePath As String = "sample.csv", _
-                            Optional targetKey As String = "id") As Object
-
-    Dim wb As Workbook
-    Dim ws As Worksheet
-    Dim dataArr As Variant
-
-    Set wb = Workbooks.Open(csvFilePath)
-    Set ws = wb.Sheets(1)
-
-    dataArr = ws.UsedRange.Value
-
-    Dim headersHash As Object
-    Set headersHash = CreateObject("Scripting.Dictionary")
-
-    Dim col As Long
-    Dim lastCol As Long
-    lastCol = UBound(dataArr, 2)
-
-    For col = 1 To lastCol
-        headersHash(CStr(dataArr(1, col))) = col
-    Next col
-
-    Dim keyColumnIndexNumber As Long
-    keyColumnIndexNumber = headersHash(targetKey)
-
-    Set SearchDataLocation = StoreDataLocation(dataArr, keyColumnIndexNumber)
-
-    wb.Close False
-
-End Function
-
-
 '######### SearchSheet
 ' ワークシート内の検索・値取得 統合モジュール
 ' 含まれる関数: GetColumnByHeader / GetPosition / GetValueByID
@@ -865,4 +751,18 @@ Function SelectFolder() As String
         End If
     End With
     Set fd = Nothing
+End Function
+
+'######### TheHash
+Function TheHash(ws As Worksheet, keyIndex As Long) As Object
+    Dim myHash As Object: Set myHash = CreateObject("Scripting.Dictionary")
+
+    Dim i As Long
+    Dim key As String
+
+    For i = 1 To ws.Cells(ws.Rows.Count, keyIndex).End(xlUp).Row
+        key = CStr(ws.Cells(i, keyIndex).Value)
+        myHash(key) = i
+    Next i
+    Set TheHash = myHash
 End Function
