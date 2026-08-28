@@ -4,11 +4,11 @@
 
 ## 入力
 
-| 引数名 | 型     | 説明                       |
-|--------|--------|----------------------------|
-| sourcePath      | String | コピー元のパス             |
-| destinationPath | String | コピー先のパス             |
-| overwrite（省略可）| Boolean | 既存ファイル/フォルダの上書き可否（省略時は False）|
+| 引数名 | 型 | 説明 |
+|--------|----|------|
+| sourcePath | String | コピー元のパス |
+| destinationPath | String | コピー先のパス |
+| overwrite（省略可） | Boolean | 既存ファイル/フォルダの上書き可否（省略時は False） |
 
 ## 出力
 
@@ -31,10 +31,10 @@ End If
 
 ## 入力
 
-| 引数名 | 型     | 説明           |
-|--------|--------|----------------|
-| sourcePath      | String | 移動元のパス   |
-| destinationPath | String | 移動先のパス   |
+| 引数名 | 型 | 説明 |
+|--------|----|------|
+| sourcePath | String | 移動元のパス |
+| destinationPath | String | 移動先のパス |
 
 ## 出力
 
@@ -57,8 +57,8 @@ End If
 
 ## 入力
 
-| 引数名   | 型     | 説明           |
-|----------|--------|----------------|
+| 引数名 | 型 | 説明 |
+|--------|----|------|
 | targetPath | String | 削除対象のパス |
 
 ## 出力

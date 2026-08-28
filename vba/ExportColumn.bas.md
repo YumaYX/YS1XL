@@ -12,11 +12,11 @@
 
 ### 入力
 
-| 引数名          | 型        | 説明                                   |
-|-----------------|-----------|----------------------------------------|
-| ws              | Worksheet | 対象のワークシート                     |
-| colNum（省略可）| Long    | 取得する列番号（省略時は 1 = A列）     |
-| delimiter（省略可）| String | 値をつなぐ区切り（省略時は改行 vbCrLf）|
+| 引数名 | 型 | 説明 |
+|--------|----|------|
+| ws | Worksheet | 対象のワークシート |
+| colNum（省略可） | Long | 取得する列番号（省略時は 1 = A列） |
+| delimiter（省略可） | String | 値をつなぐ区切り（省略時は改行 vbCrLf） |
 
 ### 出力
 
@@ -30,7 +30,7 @@ Dim ws As Worksheet
 Set ws = ThisWorkbook.Sheets("Sheet1")
 
 Dim s As String
-s = GetColumnValuesAsString(ws, 1, ",")
+s = GetColumnValuesAsString(ws, 1, " / ")
 Debug.Print s
 ```
 
@@ -43,12 +43,12 @@ Debug.Print s
 
 ### 入力
 
-| 引数名       | 型        | 説明                                   |
-|--------------|-----------|----------------------------------------|
-| ws           | Worksheet | 対象のワークシート                     |
-| filePath     | String    | 保存先のフルパス                       |
-| colNum（省略可）| Long    | 書き出す列番号（省略時は 1 = A列）     |
-| delimiter（省略可）| String | 値をつなぐ区切り（省略時は改行 vbCrLf） |
+| 引数名 | 型 | 説明 |
+|--------|----|------|
+| ws | Worksheet | 対象のワークシート |
+| filePath | String | 保存先のフルパス |
+| colNum（省略可） | Long | 書き出す列番号（省略時は 1 = A列） |
+| delimiter（省略可） | String | 値をつなぐ区切り（省略時は改行 vbCrLf） |
 
 ### 出力
 

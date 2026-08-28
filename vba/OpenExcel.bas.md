@@ -2,16 +2,16 @@
 
 - 目的: ファイル選択ダイアログで選択した Excel/CSV ファイルを開き Workbook を返す。
 
-# 入力
+## 入力
 
-なし
+なし。
 
-# 出力
+## 出力
 
 - 型: Workbook
 - 内容: 開いたワークブック。キャンセル時は Nothing。
 
-# 使用例
+## 使用例
 
 ```vba
 Dim wb As Workbook
