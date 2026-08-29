@@ -1,5 +1,6 @@
 default:
 	bundle install
+	mkdir -p _site
 	sh lib/make_posts.sh
 	bundle exec jekyll server -H 0.0.0.0 -P 3000
 
