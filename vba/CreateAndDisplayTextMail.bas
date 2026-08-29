@@ -1,4 +1,3 @@
-'######### CreateAndDisplayTextMail
 ' CreateAndDisplayTextMail "taro@example.com", , , "件名", "本文"
 ' CreateAndDisplayTextMail "a@b.com; c@d.com", , , "宛先はカンマ区切り可", ""
 '========================================
@@ -37,6 +36,7 @@ Sub CreateAndDisplayTextMail(toAddr As String, _
         .Display  ' 作成したメールを表示
     End With
 End Sub
+
 
 
 

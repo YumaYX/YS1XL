@@ -1,4 +1,3 @@
-'######### SelectFolder
 Function SelectFolder() As String
     Dim fd As Object
     Set fd = Application.FileDialog(4)
@@ -14,3 +13,4 @@ Function SelectFolder() As String
     End With
     Set fd = Nothing
 End Function
+

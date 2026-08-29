@@ -1,4 +1,3 @@
-'######### SearchSheet
 ' ワークシート内の検索・値取得 統合モジュール
 ' 含まれる関数: GetColumnByHeader / GetPosition / GetValueByID
 '========================================
@@ -99,4 +98,5 @@ Function GetValueByID(ws As Worksheet, _
         End If
     Next r
 End Function
+
 

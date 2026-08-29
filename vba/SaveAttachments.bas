@@ -1,4 +1,3 @@
-'######### SaveAttachments
 ' Call SaveAttachments("アーカイブ", "C:\Temp", "キーワード")
 '
 ' 第1引数：メールフォルダ（ルートからのパス）
@@ -73,6 +72,7 @@ Public Sub SaveAttachments( _
         End If
     Next i
 End Sub
+
 
 
 

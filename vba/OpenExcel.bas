@@ -1,4 +1,3 @@
-'######### OpenExcel
 ' Dim wb As Workbook: Set wb = OpenExcel()
 
 Function OpenExcel() As Workbook
@@ -13,6 +12,7 @@ Function OpenExcel() As Workbook
 
     Set OpenExcel = Workbooks.Open(filename)
 End Function
+
 
 
 

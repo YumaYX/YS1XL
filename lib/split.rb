@@ -16,6 +16,7 @@ File.foreach("module.bas") do |line|
 
     name = line.split[1] || "unknown"
     current_file = File.open("vba/#{name}.bas", "w")
+    next
   end
 
   buffer << line if current_file

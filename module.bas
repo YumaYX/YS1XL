@@ -198,6 +198,7 @@ ErrorHandler:
 
 End Function
 
+
 '######### CountValues
 ' Dim ws As Worksheet: Set ws = ThisWorkbook.Sheets("Sheet1")
 ' Dim d As Object: Set d = CountValues(ws, 1)
@@ -232,6 +233,7 @@ Function CountValues(ws As Worksheet, Optional col As Long = 1) As Object
     Set CountValues = d
 
 End Function
+
 
 
 
@@ -274,6 +276,7 @@ Sub CreateAndDisplayTextMail(toAddr As String, _
         .Display  ' 作成したメールを表示
     End With
 End Sub
+
 
 
 
@@ -333,6 +336,32 @@ Sub ExportColumnToFile(ws As Worksheet, _
 End Sub
 
 
+
+'######### GetFiles
+' Dim col As Collection: Set col = GetFiles("C:\Temp", "*.txt")
+' For Each f In col: Debug.Print f: Next
+Function GetFiles(folderPath As String, pattern As String) As Collection
+    Dim col As New Collection
+    Dim fileName As String
+
+    If Right(folderPath, 1) <> "\" Then
+        folderPath = folderPath & "\"
+    End If
+
+    fileName = Dir(folderPath & pattern)
+
+    Do While fileName <> ""
+        col.Add folderPath & fileName
+        fileName = Dir()
+    Loop
+
+    Set GetFiles = col
+End Function
+
+
+
+
+
 '######### GetTimestamp
 ' Dim ts As String: ts = GetTimestamp()
 ' Debug.Print ts   ' 2026-08-19-09-30-00
@@ -344,6 +373,8 @@ End Function
 
 
 
+
+'######### GlobCollection
 '######### GlobCollection
 ' Dim col As Collection: Set col = GlobCollection("C:\Temp", "*.txt")
 ' For Each f In col: Debug.Print f: Next
@@ -493,6 +524,7 @@ End Function
 
 
 
+
 '######### LastUsedRow
 ' Dim ws As Worksheet: Set ws = ThisWorkbook.Sheets("Sheet1")
 ' Dim n As Long: n = LastUsedRow(ws)      ' A列の最終使用行
@@ -506,6 +538,7 @@ Function LastUsedRow(ws As Worksheet, Optional col As Long = 1) As Long
         End If
     End With
 End Function
+
 
 
 
@@ -525,6 +558,7 @@ Function OpenExcel() As Workbook
 
     Set OpenExcel = Workbooks.Open(filename)
 End Function
+
 
 
 
@@ -549,6 +583,7 @@ Function ReadUtf8Text(filePath As String) As String
     Set stm = Nothing
 
 End Function
+
 
 
 
@@ -628,6 +663,7 @@ Public Sub SaveAttachments( _
         End If
     Next i
 End Sub
+
 
 
 
@@ -736,6 +772,7 @@ Function GetValueByID(ws As Worksheet, _
 End Function
 
 
+
 '######### SelectFolder
 Function SelectFolder() As String
     Dim fd As Object
@@ -752,6 +789,7 @@ Function SelectFolder() As String
     End With
     Set fd = Nothing
 End Function
+
 
 '######### TheHash
 Function TheHash(ws As Worksheet, keyIndex As Long) As Object

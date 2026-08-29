@@ -1,4 +1,3 @@
-'######### ExportColumn
 ' 列の値を取得・ファイル出力する統合モジュール
 ' 含まれる関数: GetColumnValuesAsString / ExportColumnToFile
 '========================================
@@ -51,4 +50,5 @@ Sub ExportColumnToFile(ws As Worksheet, _
     Print #fNum, content
     Close #fNum
 End Sub
+
 

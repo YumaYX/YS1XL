@@ -1,4 +1,3 @@
-'######### TheHash
 Function TheHash(ws As Worksheet, keyIndex As Long) As Object
     Dim myHash As Object: Set myHash = CreateObject("Scripting.Dictionary")
 

@@ -1,4 +1,3 @@
-'######### IPaddress
 ' Debug.Print IsValidIPAddress("192.168.0.1")       ' True
 ' Debug.Print IsValidIPAddress("192.168.0.999")     ' False
 Function IsValidIPAddress(ByVal ip As String) As Boolean
@@ -119,6 +118,7 @@ Function Mask2CIDR(mask As String) As Integer
 
     Mask2CIDR = cidr
 End Function
+
 
 
 

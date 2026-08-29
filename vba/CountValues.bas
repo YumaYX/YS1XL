@@ -1,4 +1,3 @@
-'######### CountValues
 ' Dim ws As Worksheet: Set ws = ThisWorkbook.Sheets("Sheet1")
 ' Dim d As Object: Set d = CountValues(ws, 1)
 ' Debug.Print d("りんご")   ' "りんご" の出現回数
@@ -32,5 +31,6 @@ Function CountValues(ws As Worksheet, Optional col As Long = 1) As Object
     Set CountValues = d
 
 End Function
+
 
 
