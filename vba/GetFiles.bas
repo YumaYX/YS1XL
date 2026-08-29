@@ -1,5 +1,13 @@
-' Dim col As Collection: Set col = GetFiles("C:\Temp", "*.txt")
-' For Each f In col: Debug.Print f: Next
+' 引数:
+'   folderPath - 対象フォルダパス（末尾の \ はなくても自動補完）
+'   pattern    - ファイル名のワイルドカードパターン（例: *.txt）
+'
+' 戻り値:
+'   パターンに一致したファイルのフルパスを格納した Collection
+'
+' 使用例:
+'   Dim col As Collection: Set col = GetFiles("C:\Temp", "*.txt")
+'   For Each f In col: Debug.Print f: Next
 Function GetFiles(folderPath As String, pattern As String) As Collection
     Dim col As New Collection
     Dim fileName As String
@@ -19,6 +27,17 @@ Function GetFiles(folderPath As String, pattern As String) As Collection
 End Function
 
 
+' 引数:
+'   folderPath - 対象フォルダパス（末尾の \ はなくても自動補完）
+'   pattern    - ファイル名のワイルドカードパターン（例: *.txt）
+'
+' 戻り値:
+'   サブフォルダを含めてパターンに一致したファイルのフルパスを格納した Collection
+'   （対象フォルダが存在しない場合は空の Collection）
+'
+' 使用例:
+'   Dim col As Collection: Set col = GetFilesRecursive("C:\Temp", "*.txt")
+'   For Each f In col: Debug.Print f: Next
 Function GetFilesRecursive(folderPath As String, pattern As String) As Collection
     Dim col As New Collection
     Dim fso As Object
@@ -33,6 +52,12 @@ Function GetFilesRecursive(folderPath As String, pattern As String) As Collectio
 End Function
 
 
+' 引数:
+'   folder  - 走査対象の FSO Folder オブジェクト
+'   pattern - ファイル名のワイルドカードパターン（例: *.txt）
+'   col     - 一致したファイルのフルパスを追加する Collection（ByRef）
+'
+' 戻り値: なし（col に直接追加される）
 Private Sub GetFilesRecursive_Add( _
     ByVal folder As Object, _
     ByVal pattern As String, _
@@ -53,13 +78,7 @@ Private Sub GetFilesRecursive_Add( _
         GetFilesRecursive_Add subFolder, pattern, col
     Next subFolder
 
-End Sub'######### GetTimestamp
-' Dim ts As String: ts = GetTimestamp()
-' Debug.Print ts   ' 2026-08-19-09-30-00
-Function GetTimestamp() As String
-    ' yyyy-mm-dd-HH-MM-ss 形式で現在時刻を返す
-    GetTimestamp = Format(Now, "yyyy-mm-dd-HH-MM-ss")
-End Function
+End Sub
 
 
 

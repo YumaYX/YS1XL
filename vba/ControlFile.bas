@@ -21,6 +21,9 @@ End Function
 '==========================================================
 ' Pathの種類を判定
 '
+' 引数:
+'   targetPath - 判定対象のパス（ファイル/フォルダ）
+'
 ' 戻り値
 '   "FILE" : ファイル
 '   "DIR"  : フォルダ
@@ -50,6 +53,15 @@ End Function
 ' Cp（copy：コピー）
 '
 ' ファイル / フォルダを自動判定
+'
+' 引数:
+'   sourcePath      - コピー元のパス（ファイル/フォルダを自動判定）
+'   destinationPath - コピー先のパス
+'   overwrite(省略可)- 上書きの可否（省略時: False）
+'
+' 戻り値:
+'   True  : 成功
+'   False : 失敗
 '==========================================================
 Public Function Cp( _
     ByVal sourcePath As String, _
@@ -102,6 +114,14 @@ End Function
 ' Mv（move：移動）
 '
 ' ファイル / フォルダを自動判定
+'
+' 引数:
+'   sourcePath      - 移動元のパス（ファイル/フォルダを自動判定）
+'   destinationPath - 移動先のパス
+'
+' 戻り値:
+'   True  : 成功
+'   False : 失敗
 '==========================================================
 ' If Mv("C:\src\a.txt", "C:\dst\a.txt") Then Debug.Print "移動成功"
 Public Function Mv( _
@@ -152,6 +172,13 @@ End Function
 ' Rm（remove：削除）
 '
 ' ファイル / フォルダを自動判定
+'
+' 引数:
+'   targetPath - 削除対象のパス（ファイル/フォルダを自動判定）
+'
+' 戻り値:
+'   True  : 成功
+'   False : 失敗
 '==========================================================
 ' If Rm("C:\src\a.txt") Then Debug.Print "削除成功"
 Public Function Rm( _

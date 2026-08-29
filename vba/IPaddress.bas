@@ -1,5 +1,9 @@
 ' Debug.Print IsValidIPAddress("192.168.0.1")       ' True
 ' Debug.Print IsValidIPAddress("192.168.0.999")     ' False
+' 引数:
+'   ip - 検証するIPアドレス
+' 戻り値:
+'   有効なら True / 無効なら False
 Function IsValidIPAddress(ByVal ip As String) As Boolean
     Dim parts() As String
     Dim i As Integer
@@ -24,6 +28,10 @@ End Function
 
 ' Debug.Print IsValidSubnetMask("255.255.255.0")    ' True
 ' Debug.Print IsValidSubnetMask("255.0.255.0")      ' False（1の連続でない）
+' 引数:
+'   mask - 検証するサブネットマスク
+' 戻り値:
+'   有効なら True / 無効なら False
 Function IsValidSubnetMask(ByVal mask As String) As Boolean
     Dim parts() As String
     Dim i As Integer
@@ -53,6 +61,11 @@ End Function
 
 ' Debug.Print IsValidNetworkAddress("192.168.0.1", "255.255.255.0")   ' True
 ' Debug.Print IsValidNetworkAddress("192.168.1.1", "255.255.255.0")   ' False
+' 引数:
+'   ip   - 検証するIPアドレス
+'   mask - サブネットマスク
+' 戻り値:
+'   有効なら True / 無効なら False
 Function IsValidNetworkAddress(ByVal ip As String, ByVal mask As String) As Boolean
     Dim ipParts() As String
     Dim maskParts() As String
@@ -75,6 +88,10 @@ End Function
 
 ' Debug.Print CIDR2Mask(24)   ' 255.255.255.0
 ' Debug.Print CIDR2Mask(8)    ' 255.0.0.0
+' 引数:
+'   cidr - プレフィックス長（0～32）
+' 戻り値:
+'   ドット区切りのサブネットマスク文字列
 Function CIDR2Mask(cidr As Integer) As String
     Dim i As Integer
     Dim mask(3) As Integer
@@ -99,6 +116,10 @@ End Function
 
 ' Debug.Print Mask2CIDR("255.255.255.0")   ' 24
 ' Debug.Print Mask2CIDR("255.0.0.0")       ' 8
+' 引数:
+'   mask - ドット区切りのサブネットマスク
+' 戻り値:
+'   プレフィックス長（0～32）
 Function Mask2CIDR(mask As String) As Integer
     Dim parts() As String
     Dim i As Integer
