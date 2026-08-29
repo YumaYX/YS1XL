@@ -197,7 +197,6 @@ ErrorHandler:
 
 End Function
 
-
 '######### CountValues
 ' Dim ws As Worksheet: Set ws = ThisWorkbook.Sheets("Sheet1")
 ' Dim d As Object: Set d = CountValues(ws, 1)
@@ -232,7 +231,6 @@ Function CountValues(ws As Worksheet, Optional col As Long = 1) As Object
     Set CountValues = d
 
 End Function
-
 
 
 
@@ -275,7 +273,6 @@ Sub CreateAndDisplayTextMail(toAddr As String, _
         .Display  ' 作成したメールを表示
     End With
 End Sub
-
 
 
 
@@ -335,7 +332,6 @@ Sub ExportColumnToFile(ws As Worksheet, _
 End Sub
 
 
-
 '######### GetFiles
 ' Dim col As Collection: Set col = GetFiles("C:\Temp", "*.txt")
 ' For Each f In col: Debug.Print f: Next
@@ -358,52 +354,47 @@ Function GetFiles(folderPath As String, pattern As String) As Collection
 End Function
 
 
-' GetFilesRecursive: サブフォルダも含めて検索する
 Function GetFilesRecursive(folderPath As String, pattern As String) As Collection
     Dim col As New Collection
+    Dim fso As Object
 
-    If Right(folderPath, 1) <> "\" Then
-        folderPath = folderPath & "\"
+    Set fso = CreateObject("Scripting.FileSystemObject")
+
+    If fso.FolderExists(folderPath) Then
+        GetFilesRecursive_Add fso.GetFolder(folderPath), pattern, col
     End If
-
-    GetFilesRecursive_Add col, folderPath, pattern
 
     Set GetFilesRecursive = col
 End Function
 
-Private Sub GetFilesRecursive_Add(col As Collection, folderPath As String, pattern As String)
-    Dim fileName As String
-    Dim subFolder As String
 
-    fileName = Dir(folderPath & pattern)
-    Do While fileName <> ""
-        col.Add folderPath & fileName
-        fileName = Dir()
-    Loop
+Private Sub GetFilesRecursive_Add( _
+    ByVal folder As Object, _
+    ByVal pattern As String, _
+    ByRef col As Collection)
 
-    subFolder = Dir(folderPath & "*.*", vbDirectory)
-    Do While subFolder <> ""
-        If subFolder <> "." And subFolder <> ".." Then
-            If (GetAttr(folderPath & subFolder) And vbDirectory) = vbDirectory Then
-                GetFilesRecursive_Add col, folderPath & subFolder & "\", pattern
-            End If
+    Dim file As Object
+    Dim subFolder As Object
+
+    ' ファイル
+    For Each file In folder.Files
+        If file.Name Like pattern Then
+            col.Add file.Path
         End If
-        subFolder = Dir()
-    Loop
-End Sub
+    Next file
 
+    ' サブフォルダ
+    For Each subFolder In folder.SubFolders
+        GetFilesRecursive_Add subFolder, pattern, col
+    Next subFolder
 
-
-
-
-'######### GetTimestamp
+End Sub'######### GetTimestamp
 ' Dim ts As String: ts = GetTimestamp()
 ' Debug.Print ts   ' 2026-08-19-09-30-00
 Function GetTimestamp() As String
     ' yyyy-mm-dd-HH-MM-ss 形式で現在時刻を返す
     GetTimestamp = Format(Now, "yyyy-mm-dd-HH-MM-ss")
 End Function
-
 
 
 
@@ -533,7 +524,6 @@ End Function
 
 
 
-
 '######### LastUsedRow
 ' Dim ws As Worksheet: Set ws = ThisWorkbook.Sheets("Sheet1")
 ' Dim n As Long: n = LastUsedRow(ws)      ' A列の最終使用行
@@ -547,7 +537,6 @@ Function LastUsedRow(ws As Worksheet, Optional col As Long = 1) As Long
         End If
     End With
 End Function
-
 
 
 
@@ -567,7 +556,6 @@ Function OpenExcel() As Workbook
 
     Set OpenExcel = Workbooks.Open(filename)
 End Function
-
 
 
 
@@ -592,7 +580,6 @@ Function ReadUtf8Text(filePath As String) As String
     Set stm = Nothing
 
 End Function
-
 
 
 
@@ -672,7 +659,6 @@ Public Sub SaveAttachments( _
         End If
     Next i
 End Sub
-
 
 
 
@@ -781,7 +767,6 @@ Function GetValueByID(ws As Worksheet, _
 End Function
 
 
-
 '######### SelectFolder
 Function SelectFolder() As String
     Dim fd As Object
@@ -798,7 +783,6 @@ Function SelectFolder() As String
     End With
     Set fd = Nothing
 End Function
-
 
 '######### TheHash
 Function TheHash(ws As Worksheet, keyIndex As Long) As Object
