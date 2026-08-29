@@ -19,41 +19,38 @@ Function GetFiles(folderPath As String, pattern As String) As Collection
 End Function
 
 
-' GetFilesRecursive: サブフォルダも含めて検索する
 Function GetFilesRecursive(folderPath As String, pattern As String) As Collection
     Dim col As New Collection
+    Dim fso As Object
 
-    If Right(folderPath, 1) <> "\" Then
-        folderPath = folderPath & "\"
+    Set fso = CreateObject("Scripting.FileSystemObject")
+
+    If fso.FolderExists(folderPath) Then
+        GetFilesRecursive_Add fso.GetFolder(folderPath), pattern, col
     End If
-
-    GetFilesRecursive_Add col, folderPath, pattern
 
     Set GetFilesRecursive = col
 End Function
 
-Private Sub GetFilesRecursive_Add(col As Collection, folderPath As String, pattern As String)
-    Dim fileName As String
-    Dim subFolder As String
 
-    fileName = Dir(folderPath & pattern)
-    Do While fileName <> ""
-        col.Add folderPath & fileName
-        fileName = Dir()
-    Loop
+Private Sub GetFilesRecursive_Add( _
+    ByVal folder As Object, _
+    ByVal pattern As String, _
+    ByRef col As Collection)
 
-    subFolder = Dir(folderPath & "*.*", vbDirectory)
-    Do While subFolder <> ""
-        If subFolder <> "." And subFolder <> ".." Then
-            If (GetAttr(folderPath & subFolder) And vbDirectory) = vbDirectory Then
-                GetFilesRecursive_Add col, folderPath & subFolder & "\", pattern
-            End If
+    Dim file As Object
+    Dim subFolder As Object
+
+    ' ファイル
+    For Each file In folder.Files
+        If file.Name Like pattern Then
+            col.Add file.Path
         End If
-        subFolder = Dir()
-    Loop
+    Next file
+
+    ' サブフォルダ
+    For Each subFolder In folder.SubFolders
+        GetFilesRecursive_Add subFolder, pattern, col
+    Next subFolder
+
 End Sub
-
-
-
-
-
