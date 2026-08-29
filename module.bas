@@ -1,4 +1,3 @@
-
 '######### ControlFile
 ' If Cp("C:\src\a.txt", "C:\dst\a.txt") Then Debug.Print "コピー成功"
 ' If Cp("C:\src\folder", "C:\dst\folder") Then Debug.Print "フォルダも自動判定"
@@ -22,6 +21,9 @@ End Function
 
 '==========================================================
 ' Pathの種類を判定
+'
+' 引数:
+'   targetPath - 判定対象のパス（ファイル/フォルダ）
 '
 ' 戻り値
 '   "FILE" : ファイル
@@ -52,6 +54,15 @@ End Function
 ' Cp（copy：コピー）
 '
 ' ファイル / フォルダを自動判定
+'
+' 引数:
+'   sourcePath      - コピー元のパス（ファイル/フォルダを自動判定）
+'   destinationPath - コピー先のパス
+'   overwrite(省略可)- 上書きの可否（省略時: False）
+'
+' 戻り値:
+'   True  : 成功
+'   False : 失敗
 '==========================================================
 Public Function Cp( _
     ByVal sourcePath As String, _
@@ -104,6 +115,14 @@ End Function
 ' Mv（move：移動）
 '
 ' ファイル / フォルダを自動判定
+'
+' 引数:
+'   sourcePath      - 移動元のパス（ファイル/フォルダを自動判定）
+'   destinationPath - 移動先のパス
+'
+' 戻り値:
+'   True  : 成功
+'   False : 失敗
 '==========================================================
 ' If Mv("C:\src\a.txt", "C:\dst\a.txt") Then Debug.Print "移動成功"
 Public Function Mv( _
@@ -154,6 +173,13 @@ End Function
 ' Rm（remove：削除）
 '
 ' ファイル / フォルダを自動判定
+'
+' 引数:
+'   targetPath - 削除対象のパス（ファイル/フォルダを自動判定）
+'
+' 戻り値:
+'   True  : 成功
+'   False : 失敗
 '==========================================================
 ' If Rm("C:\src\a.txt") Then Debug.Print "削除成功"
 Public Function Rm( _
@@ -198,7 +224,6 @@ ErrorHandler:
 
 End Function
 
-
 '######### CountValues
 ' Dim ws As Worksheet: Set ws = ThisWorkbook.Sheets("Sheet1")
 ' Dim d As Object: Set d = CountValues(ws, 1)
@@ -233,7 +258,6 @@ Function CountValues(ws As Worksheet, Optional col As Long = 1) As Object
     Set CountValues = d
 
 End Function
-
 
 
 
@@ -276,7 +300,6 @@ Sub CreateAndDisplayTextMail(toAddr As String, _
         .Display  ' 作成したメールを表示
     End With
 End Sub
-
 
 
 
@@ -336,10 +359,17 @@ Sub ExportColumnToFile(ws As Worksheet, _
 End Sub
 
 
-
 '######### GetFiles
-' Dim col As Collection: Set col = GetFiles("C:\Temp", "*.txt")
-' For Each f In col: Debug.Print f: Next
+' 引数:
+'   folderPath - 対象フォルダパス（末尾の \ はなくても自動補完）
+'   pattern    - ファイル名のワイルドカードパターン（例: *.txt）
+'
+' 戻り値:
+'   パターンに一致したファイルのフルパスを格納した Collection
+'
+' 使用例:
+'   Dim col As Collection: Set col = GetFiles("C:\Temp", "*.txt")
+'   For Each f In col: Debug.Print f: Next
 Function GetFiles(folderPath As String, pattern As String) As Collection
     Dim col As New Collection
     Dim fileName As String
@@ -359,40 +389,58 @@ Function GetFiles(folderPath As String, pattern As String) As Collection
 End Function
 
 
-' GetFilesRecursive: サブフォルダも含めて検索する
+' 引数:
+'   folderPath - 対象フォルダパス（末尾の \ はなくても自動補完）
+'   pattern    - ファイル名のワイルドカードパターン（例: *.txt）
+'
+' 戻り値:
+'   サブフォルダを含めてパターンに一致したファイルのフルパスを格納した Collection
+'   （対象フォルダが存在しない場合は空の Collection）
+'
+' 使用例:
+'   Dim col As Collection: Set col = GetFilesRecursive("C:\Temp", "*.txt")
+'   For Each f In col: Debug.Print f: Next
 Function GetFilesRecursive(folderPath As String, pattern As String) As Collection
     Dim col As New Collection
+    Dim fso As Object
 
-    If Right(folderPath, 1) <> "\" Then
-        folderPath = folderPath & "\"
+    Set fso = CreateObject("Scripting.FileSystemObject")
+
+    If fso.FolderExists(folderPath) Then
+        GetFilesRecursive_Add fso.GetFolder(folderPath), pattern, col
     End If
-
-    GetFilesRecursive_Add col, folderPath, pattern
 
     Set GetFilesRecursive = col
 End Function
 
-Private Sub GetFilesRecursive_Add(col As Collection, folderPath As String, pattern As String)
-    Dim fileName As String
-    Dim subFolder As String
 
-    fileName = Dir(folderPath & pattern)
-    Do While fileName <> ""
-        col.Add folderPath & fileName
-        fileName = Dir()
-    Loop
+' 引数:
+'   folder  - 走査対象の FSO Folder オブジェクト
+'   pattern - ファイル名のワイルドカードパターン（例: *.txt）
+'   col     - 一致したファイルのフルパスを追加する Collection（ByRef）
+'
+' 戻り値: なし（col に直接追加される）
+Private Sub GetFilesRecursive_Add( _
+    ByVal folder As Object, _
+    ByVal pattern As String, _
+    ByRef col As Collection)
 
-    subFolder = Dir(folderPath & "*.*", vbDirectory)
-    Do While subFolder <> ""
-        If subFolder <> "." And subFolder <> ".." Then
-            If (GetAttr(folderPath & subFolder) And vbDirectory) = vbDirectory Then
-                GetFilesRecursive_Add col, folderPath & subFolder & "\", pattern
-            End If
+    Dim file As Object
+    Dim subFolder As Object
+
+    ' ファイル
+    For Each file In folder.Files
+        If file.Name Like pattern Then
+            col.Add file.Path
         End If
-        subFolder = Dir()
-    Loop
-End Sub
+    Next file
 
+    ' サブフォルダ
+    For Each subFolder In folder.SubFolders
+        GetFilesRecursive_Add subFolder, pattern, col
+    Next subFolder
+
+End Sub
 
 
 
@@ -408,10 +456,13 @@ End Function
 
 
 
-
 '######### IPaddress
 ' Debug.Print IsValidIPAddress("192.168.0.1")       ' True
 ' Debug.Print IsValidIPAddress("192.168.0.999")     ' False
+' 引数:
+'   ip - 検証するIPアドレス
+' 戻り値:
+'   有効なら True / 無効なら False
 Function IsValidIPAddress(ByVal ip As String) As Boolean
     Dim parts() As String
     Dim i As Integer
@@ -436,6 +487,10 @@ End Function
 
 ' Debug.Print IsValidSubnetMask("255.255.255.0")    ' True
 ' Debug.Print IsValidSubnetMask("255.0.255.0")      ' False（1の連続でない）
+' 引数:
+'   mask - 検証するサブネットマスク
+' 戻り値:
+'   有効なら True / 無効なら False
 Function IsValidSubnetMask(ByVal mask As String) As Boolean
     Dim parts() As String
     Dim i As Integer
@@ -465,6 +520,11 @@ End Function
 
 ' Debug.Print IsValidNetworkAddress("192.168.0.1", "255.255.255.0")   ' True
 ' Debug.Print IsValidNetworkAddress("192.168.1.1", "255.255.255.0")   ' False
+' 引数:
+'   ip   - 検証するIPアドレス
+'   mask - サブネットマスク
+' 戻り値:
+'   有効なら True / 無効なら False
 Function IsValidNetworkAddress(ByVal ip As String, ByVal mask As String) As Boolean
     Dim ipParts() As String
     Dim maskParts() As String
@@ -487,6 +547,10 @@ End Function
 
 ' Debug.Print CIDR2Mask(24)   ' 255.255.255.0
 ' Debug.Print CIDR2Mask(8)    ' 255.0.0.0
+' 引数:
+'   cidr - プレフィックス長（0～32）
+' 戻り値:
+'   ドット区切りのサブネットマスク文字列
 Function CIDR2Mask(cidr As Integer) As String
     Dim i As Integer
     Dim mask(3) As Integer
@@ -511,6 +575,10 @@ End Function
 
 ' Debug.Print Mask2CIDR("255.255.255.0")   ' 24
 ' Debug.Print Mask2CIDR("255.0.0.0")       ' 8
+' 引数:
+'   mask - ドット区切りのサブネットマスク
+' 戻り値:
+'   プレフィックス長（0～32）
 Function Mask2CIDR(mask As String) As Integer
     Dim parts() As String
     Dim i As Integer
@@ -534,11 +602,16 @@ End Function
 
 
 
-
 '######### LastUsedRow
-' Dim ws As Worksheet: Set ws = ThisWorkbook.Sheets("Sheet1")
-' Dim n As Long: n = LastUsedRow(ws)      ' A列の最終使用行
-' Debug.Print n                           ' 例: 100
+' 使用例:
+'   Dim ws As Worksheet: Set ws = ThisWorkbook.Sheets("Sheet1")
+'   Dim n As Long: n = LastUsedRow(ws)      ' A列の最終使用行
+'   Debug.Print n                           ' 例: 100
+' 引数:
+'   ws  - 対象ワークシート
+'   col - 調べる列番号（省略時: A列）
+' 戻り値:
+'   最終使用行番号（データが無ければ 0）
 Function LastUsedRow(ws As Worksheet, Optional col As Long = 1) As Long
     With ws
         If Application.WorksheetFunction.CountA(.Columns(col)) = 0 Then
@@ -548,7 +621,6 @@ Function LastUsedRow(ws As Worksheet, Optional col As Long = 1) As Long
         End If
     End With
 End Function
-
 
 
 
@@ -572,10 +644,14 @@ End Function
 
 
 
-
 '######### ReadUtf8Text
-' Dim s As String: s = ReadUtf8Text("C:\Temp\file.txt")
-' Debug.Print s   ' UTF-8 のテキスト内容を文字列で取得
+' 使用例:
+'   Dim s As String: s = ReadUtf8Text("C:\Temp\file.txt")
+'   Debug.Print s   ' UTF-8 のテキスト内容を文字列で取得
+' 引数:
+'   filePath - 読み込むファイルのフルパス
+' 戻り値:
+'   UTF-8 のテキスト内容を文字列で返す
 Function ReadUtf8Text(filePath As String) As String
     
     Dim stm As Object
@@ -593,7 +669,6 @@ Function ReadUtf8Text(filePath As String) As String
     Set stm = Nothing
 
 End Function
-
 
 
 
@@ -673,7 +748,6 @@ Public Sub SaveAttachments( _
         End If
     Next i
 End Sub
-
 
 
 
@@ -782,8 +856,12 @@ Function GetValueByID(ws As Worksheet, _
 End Function
 
 
-
 '######### SelectFolder
+' 使用例:
+'   Dim path As String: path = SelectFolder()
+'   If path = "" Then Exit Sub     ' キャンセル時は空文字
+' 戻り値:
+'   選択したフォルダのフルパス（キャンセル時は ""）
 Function SelectFolder() As String
     Dim fd As Object
     Set fd = Application.FileDialog(4)
@@ -800,8 +878,18 @@ Function SelectFolder() As String
     Set fd = Nothing
 End Function
 
-
 '######### TheHash
+' 使用例:
+'   Dim ws As Worksheet: Set ws = ThisWorkbook.Sheets("Sheet1")
+'   Dim h As Object: Set h = TheHash(ws, 1)
+'   Debug.Print h("りんご")          ' 値"りんご"が最後に現れた行番号
+' 引数:
+'   ws       - 対象ワークシート
+'   keyIndex - キーとして使う列番号
+' 戻り値:
+'   Scripting.Dictionary
+'     Key  : セルの値（文字列化）
+'     Item : その値が最後に現れた行番号
 Function TheHash(ws As Worksheet, keyIndex As Long) As Object
     Dim myHash As Object: Set myHash = CreateObject("Scripting.Dictionary")
 
