@@ -10,15 +10,7 @@ layout: default
 
 
 <section>
-<ul>
-  {% for post in site.posts reversed %}
-  <li>
-    <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-    <p>
-      {{ post.content | strip_html | split: '。' | first }}。
-    </p>
-  </li>
-  {% endfor %}
+<ul>{% for post in site.posts reversed %}<li><a href="{{ post.url | relative_url }}">{{ post.title }}</a>:<li><li>{{ post.content | strip_html | split: '。' | first }}。</li></li>{% endfor %}
 </ul>
 </section>
 
