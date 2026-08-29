@@ -8,13 +8,29 @@ layout: default
 
 </section>
 
+
 <section>
-<ul>
-{% for post in site.posts reversed %}
-<li>
-<a href="{{ post.url | relative_url }}">{{ post.title }}</a>: {{ post.content | strip_html | split: '。' | first }}。
-</li>
-{% endfor %}
-</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th>タイトル</th>
+      <th>概要</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for post in site.posts reversed %}
+    <tr>
+      <td>
+        <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+      </td>
+      <td>
+        {{ post.content | strip_html | split: '。' | first }}。
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
 </section>
 
