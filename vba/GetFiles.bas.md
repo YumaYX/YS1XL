@@ -31,6 +31,7 @@ Next p
 # GetFilesRecursive
 
 - 目的: 指定フォルダ以下を再帰的に走査し、パターンに一致するファイルのフルパス一覧を返す。
+- 依存: 同モジュール内の Private サブルーチン `GetFilesRecursive_Add` を使用する。
 
 ## 入力
 
