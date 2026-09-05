@@ -1,5 +1,11 @@
 # Excel VBA チートシート
 
+## 数秒のウェイト
+
+```vb
+Application.Wait Now + TimeValue("00:00:02")
+```
+
 ## セル操作
 
 - Cells
