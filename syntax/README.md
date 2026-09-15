@@ -1,5 +1,19 @@
 # Excel VBA チートシート
 
+## find
+
+見つかったセル（Rangeオブジェクト）を返す。
+
+```vb
+Set cell = Cells.Find(What:="キー見出し", LookAt:=xlWhole)
+val = cell.Offset(0, 1).value
+```
+
+```vb
+Set cell = Cells.Find(What:="キー見出し", LookAt:=xlPart)
+val = cell.Offset(0, 1).value
+```
+
 ## 数秒のウェイト
 
 ```vb
