@@ -12,7 +12,14 @@
 ## 出力
 
 - 型: Object（Scripting.Dictionary）
-- 内容: Key=セルの値、Item=出現回数。先頭行から最終使用行までを集計する。
+- 内容: Key=セルの値を文字列化したもの、Item=出現回数。先頭行から最終使用行までを集計する。
+- 空列のときは空の Dictionary を返す（`{"": 1}` にはならない）。
+- エラー値（`#N/A` など）は集計対象から除外する。
+
+## 依存
+
+- `Scripting.Dictionary`（`CreateObject` による遅延バインド。参照設定は不要）
+- `Application.WorksheetFunction.CountA`（空列判定に使用）
 
 ## 使用例
 

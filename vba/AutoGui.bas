@@ -5,6 +5,17 @@
 '   mouse_event MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0
 '   mouse_event MOUSEEVENTF_LEFTUP, 0, 0, 0, 0
 '
+' ユーザー定義型は利用箇所より前に定義しておく必要がある
+Private Type POINTAPI
+    X As Long
+    Y As Long
+End Type
+
+Private Const MOUSEEVENTF_LEFTDOWN  As Long = &H2
+Private Const MOUSEEVENTF_LEFTUP    As Long = &H4
+Private Const MOUSEEVENTF_RIGHTDOWN As Long = &H8
+Private Const MOUSEEVENTF_RIGHTUP   As Long = &H10
+
 Private Declare PtrSafe Function SetCursorPos Lib "user32" ( _
     ByVal X As Long, _
     ByVal Y As Long _
@@ -21,14 +32,3 @@ Private Declare PtrSafe Sub mouse_event Lib "user32" ( _
 Private Declare PtrSafe Function GetCursorPos Lib "user32" ( _
     lpPoint As POINTAPI _
 ) As Long
-
-Private Type POINTAPI
-    X As Long
-    Y As Long
-End Type
-
-Private Const MOUSEEVENTF_LEFTDOWN  As Long = &H2
-Private Const MOUSEEVENTF_LEFTUP    As Long = &H4
-Private Const MOUSEEVENTF_RIGHTDOWN As Long = &H8
-Private Const MOUSEEVENTF_RIGHTUP   As Long = &H10
-

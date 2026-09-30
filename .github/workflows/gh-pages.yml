@@ -3,7 +3,7 @@ name: Deploy Pages
 on:
   # Runs on pushes targeting the default branch
   push:
-    branches: ["main"]
+    branches: ["master"]
 
   # Allows you to run this workflow manually from the Actions tab workflow_dispatch:
 
@@ -34,11 +34,13 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Build with jekyll
-        # Outputs to the './_site' directory by default
+        # _posts/ は生成物なので先に作り、jekyll build は一度だけ実行する。
+        # 2 回ビルドすると後のビルドが _site を作り直して
+        # fix_tables.sh の加工が消えてしまうため。
         run: |-
-          bundle exec jekyll build
           sh lib/make_posts.sh
           bundle exec jekyll build
+          sh lib/fix_tables.sh
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
 

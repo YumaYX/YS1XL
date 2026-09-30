@@ -23,10 +23,11 @@ plugins:
 exclude:
   - Gemfile
   - Gemfile.lock
-  - prompt.md
   - Makefile
   - .jekyll-cache/
   - lib
   - README.md
+  - format.md
   - module.bas
   - .gitignore
+  - .gitattributes

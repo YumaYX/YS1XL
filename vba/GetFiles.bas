@@ -4,13 +4,22 @@
 '
 ' 戻り値:
 '   パターンに一致したファイルのフルパスを格納した Collection
+'   （対象フォルダが存在しない場合は空の Collection）
 '
 ' 使用例:
 '   Dim col As Collection: Set col = GetFiles("C:\Temp", "*.txt")
 '   For Each f In col: Debug.Print f: Next
 Function GetFiles(folderPath As String, pattern As String) As Collection
     Dim col As New Collection
+    Dim fso As Object
     Dim fileName As String
+
+    ' 対象フォルダが存在しない場合は空の Collection を返す
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    If Not fso.FolderExists(folderPath) Then
+        Set GetFiles = col
+        Exit Function
+    End If
 
     If Right(folderPath, 1) <> "\" Then
         folderPath = folderPath & "\"
@@ -68,7 +77,9 @@ Private Sub GetFilesRecursive_Add( _
 
     ' ファイル
     For Each file In folder.Files
-        If file.Name Like pattern Then
+        ' Like は既定（Option Compare Binary）で大文字小文字を区別するため
+        ' ファイル名もパターンも小文字に揃えて比較する
+        If LCase(file.Name) Like LCase(pattern) Then
             col.Add file.Path
         End If
     Next file
@@ -79,7 +90,3 @@ Private Sub GetFilesRecursive_Add( _
     Next subFolder
 
 End Sub
-
-
-
-

@@ -13,11 +13,13 @@
 
 - 型: Double
 - 内容: Jaro距離。0（完全一致）〜1（共通文字なし）。共通文字があれば類似度の補数（1 − Jaro類似度）。
+- 両方が空文字列の場合は 0（完全一致扱い）。
+- 片方だけが空文字列の場合は共通文字なしなので 1。
 
 ## 使用例
 
 ```vba
-Debug.Print JaroDistance("MARTHA", "MARHTA")  ' ≈ 0.0555（転置を含む例）
+Debug.Print JaroDistance("MARTHA", "MARHTA")  ' ≈ 0.0556（転置を含む例）
 Debug.Print JaroDistance("abc", "abc")        ' 0
 Debug.Print JaroDistance("abc", "xyz")        ' 1
 ```

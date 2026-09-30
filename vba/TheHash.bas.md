@@ -12,7 +12,15 @@
 ## 出力
 
 - 型: Object（Scripting.Dictionary）
-- 内容: セルの値をキー、行番号を値とする連想配列。
+- 内容: Key=セルの値を文字列化したもの、Item=その値が最後に現れた行番号。
+- 同じ値が複数ある場合は、最後に出現した行番号で上書きされる。
+- エラー値（`#N/A` など）はキーに登録されず、除外される。
+- 空列のときは空の Dictionary を返す。
+
+## 依存
+
+- `Scripting.Dictionary`（`CreateObject` による遅延バインド。参照設定は不要）
+- `Application.WorksheetFunction.CountA`（空列判定に使用）
 
 ## 使用例
 

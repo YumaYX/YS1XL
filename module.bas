@@ -6,6 +6,17 @@
 '   mouse_event MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0
 '   mouse_event MOUSEEVENTF_LEFTUP, 0, 0, 0, 0
 '
+' ユーザー定義型は利用箇所より前に定義しておく必要がある
+Private Type POINTAPI
+    X As Long
+    Y As Long
+End Type
+
+Private Const MOUSEEVENTF_LEFTDOWN  As Long = &H2
+Private Const MOUSEEVENTF_LEFTUP    As Long = &H4
+Private Const MOUSEEVENTF_RIGHTDOWN As Long = &H8
+Private Const MOUSEEVENTF_RIGHTUP   As Long = &H10
+
 Private Declare PtrSafe Function SetCursorPos Lib "user32" ( _
     ByVal X As Long, _
     ByVal Y As Long _
@@ -22,21 +33,9 @@ Private Declare PtrSafe Sub mouse_event Lib "user32" ( _
 Private Declare PtrSafe Function GetCursorPos Lib "user32" ( _
     lpPoint As POINTAPI _
 ) As Long
-
-Private Type POINTAPI
-    X As Long
-    Y As Long
-End Type
-
-Private Const MOUSEEVENTF_LEFTDOWN  As Long = &H2
-Private Const MOUSEEVENTF_LEFTUP    As Long = &H4
-Private Const MOUSEEVENTF_RIGHTDOWN As Long = &H8
-Private Const MOUSEEVENTF_RIGHTUP   As Long = &H10
-
 '######### ControlFile
 ' If Cp("C:\src\a.txt", "C:\dst\a.txt") Then Debug.Print "コピー成功"
 ' If Cp("C:\src\folder", "C:\dst\folder") Then Debug.Print "フォルダも自動判定"
-' Option Explicit
 
 '==========================================================
 ' FileSystemObject（ファイルシステム操作オブジェクト）
@@ -272,8 +271,12 @@ End Function
 '
 ' 戻り値:
 '   Dictionary
-'     Key  : セルの値
+'     Key  : セルの値を文字列化したもの
 '     Item : 出現回数
+'   ※空列のときは空の Dictionary を返す
+'   ※エラー値（#N/A など）は集計対象から除外する
+' 依存:
+'   Application.WorksheetFunction.CountA
 '========================================
 
 Function CountValues(ws As Worksheet, Optional col As Long = 1) As Object
@@ -281,49 +284,72 @@ Function CountValues(ws As Worksheet, Optional col As Long = 1) As Object
     Dim lastRow As Long
     Dim c As Range
     Dim d As Object
-
-    lastRow = ws.Cells(ws.Rows.Count, col).End(xlUp).Row
+    Dim key As String
 
     Set d = CreateObject("Scripting.Dictionary")
 
+    ' 空列のときは End(xlUp) が 1 行目を返すためデータなしとして扱う
+    If Application.WorksheetFunction.CountA(ws.Columns(col)) = 0 Then
+        Set CountValues = d
+        Exit Function
+    End If
+
+    lastRow = ws.Cells(ws.Rows.Count, col).End(xlUp).Row
+
     For Each c In ws.Range(ws.Cells(1, col), ws.Cells(lastRow, col))
-        d(c.Value) = d(c.Value) + 1
+        ' エラー値は Dictionary のキーにできないため除外する
+        If Not IsError(c.Value) Then
+            key = CStr(c.Value)
+            If d.Exists(key) Then
+                d(key) = d(key) + 1
+            Else
+                d.Add key, 1
+            End If
+        End If
     Next
 
     Set CountValues = d
 
 End Function
-
-
-
 '######### CreateAndDisplayTextMail
 ' CreateAndDisplayTextMail "taro@example.com", , , "件名", "本文"
-' CreateAndDisplayTextMail "a@b.com; c@d.com", , , "宛先はカンマ区切り可", ""
+' CreateAndDisplayTextMail "a@b.com; c@d.com", , , "宛先は区切り可", ""
 '========================================
 ' 新規メール作成関数（返り値なし）
 '----------------------------------------
 ' 引数:
-'   toAddr  - 宛先 (カンマ区切りでも可)
+'   toAddr  - 宛先（カンマ・セミコロン区切り可）
 '   ccAddr  - CC (省略可)
 '   bccAddr - BCC (省略可)
 '   subjTxt - タイトル
 '   bodyTxt - 本文
+' 注:
+'   Outlook が利用できない環境では何もせず終了する
 '========================================
 Sub CreateAndDisplayTextMail(toAddr As String, _
                              Optional ccAddr As String = "", _
                              Optional bccAddr As String = "", _
                              Optional subjTxt As String = "", _
                              Optional bodyTxt As String = "")
-    On Error Resume Next
+
+    Dim olApp As Object
+    Dim mail As Object
 
     ' Outlook アプリ生成
-    Dim olApp As Object: Set olApp = GetObject(, "Outlook.Application")
-    If olApp Is Nothing Then Set olApp = CreateObject("Outlook.Application")
-
+    On Error Resume Next
+    Set olApp = GetObject(, "Outlook.Application")
+    If olApp Is Nothing Then
+        Err.Clear
+        Set olApp = CreateObject("Outlook.Application")
+    End If
     On Error GoTo 0
 
+    ' Outlook が起動できない場合は Object 変数が Nothing のままなので終了する
+    If olApp Is Nothing Then Exit Sub
+
     ' 新規メール作成
-    Dim mail As Object: Set mail = olApp.CreateItem(0) ' 0 = olMailItem
+    Set mail = olApp.CreateItem(0) ' 0 = olMailItem
+
     ' プロパティ設定
     With mail
         .To = toAddr
@@ -335,10 +361,6 @@ Sub CreateAndDisplayTextMail(toAddr As String, _
         .Display  ' 作成したメールを表示
     End With
 End Sub
-
-
-
-
 '######### ExportColumn
 ' 列の値を取得・ファイル出力する統合モジュール
 ' 含まれる関数: GetColumnValuesAsString / ExportColumnToFile
@@ -356,17 +378,36 @@ End Sub
 ' colNum    : 取得する列番号（省略時1列目）
 ' delimiter : 値をつなぐ区切り（省略時 vbCrLf で改行）
 ' 戻り値    : 列の値をつなげた文字列
+'             ※末尾に区切りは付けない
+'             ※空列のときは空文字
+' 依存     : Application.WorksheetFunction.CountA
 '========================================
 Function GetColumnValuesAsString(ws As Worksheet, _
                                  Optional colNum As Long = 1, _
                                  Optional delimiter As String = vbCrLf) As String
-    ' 最終行を取得
-    Dim lastRow As Long: lastRow = ws.Cells(ws.Rows.Count, colNum).End(xlUp).Row
-    Dim result As String: result = ""
 
-    Dim r As Long: For r = 1 To lastRow
-        result = result & ws.Cells(r, colNum).Value & delimiter
+    Dim lastRow As Long
+    Dim result As String
+    Dim r As Long
+    Dim value As Variant
+
+    GetColumnValuesAsString = ""
+
+    ' 空列のときは End(xlUp) が 1 行目を返すためデータなしとして扱う
+    If Application.WorksheetFunction.CountA(ws.Columns(colNum)) = 0 Then Exit Function
+
+    ' 最終行を取得
+    lastRow = ws.Cells(ws.Rows.Count, colNum).End(xlUp).Row
+
+    ' 2行目以降は区切りを前に付けることで末尾の区切りを避ける
+    For r = 1 To lastRow
+        value = ws.Cells(r, colNum).Value
+        ' エラー値は文字列連結できないため空文字として扱う
+        If IsError(value) Then value = ""
+        If r > 1 Then result = result & delimiter
+        result = result & value
     Next r
+
     GetColumnValuesAsString = result
 End Function
 
@@ -376,8 +417,8 @@ End Function
 '========================================
 ' 指定列の値をテキストファイルに書き出す
 ' ws       : 対象ワークシート
-' colNum   : 書き出す列番号（省略時1列目）
 ' filePath : 保存先フルパス
+' colNum   : 書き出す列番号（省略時1列目）
 ' delimiter: 値をつなぐ区切り（省略時改行）
 ' 依存     : GetColumnValuesAsString（本モジュール内）
 '========================================
@@ -385,15 +426,33 @@ Sub ExportColumnToFile(ws As Worksheet, _
                        filePath As String, _
                        Optional colNum As Long = 1, _
                        Optional delimiter As String = vbCrLf)
-    Dim content As String: content = GetColumnValuesAsString(ws, colNum, delimiter)
+
+    Dim content As String
+    Dim fNum As Integer
+    Dim isOpen As Boolean
+
+    content = GetColumnValuesAsString(ws, colNum, delimiter)
+
     ' ファイル書き出し
-    Dim fNum As Integer: fNum = FreeFile
+    fNum = FreeFile
+    isOpen = False
+
+    On Error GoTo CloseAndExit
+
     Open filePath For Output As #fNum
-    Print #fNum, content
+    isOpen = True
+    ' 行末の空白改行を付けないため Print の行末を ; で止める
+    Print #fNum, content;
     Close #fNum
+    isOpen = False
+    Exit Sub
+
+CloseAndExit:
+    ' エラー時もファイルハンドルを解放する
+    On Error Resume Next
+    If isOpen Then Close #fNum
+    On Error GoTo 0
 End Sub
-
-
 '######### GetFiles
 ' 引数:
 '   folderPath - 対象フォルダパス（末尾の \ はなくても自動補完）
@@ -401,13 +460,22 @@ End Sub
 '
 ' 戻り値:
 '   パターンに一致したファイルのフルパスを格納した Collection
+'   （対象フォルダが存在しない場合は空の Collection）
 '
 ' 使用例:
 '   Dim col As Collection: Set col = GetFiles("C:\Temp", "*.txt")
 '   For Each f In col: Debug.Print f: Next
 Function GetFiles(folderPath As String, pattern As String) As Collection
     Dim col As New Collection
+    Dim fso As Object
     Dim fileName As String
+
+    ' 対象フォルダが存在しない場合は空の Collection を返す
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    If Not fso.FolderExists(folderPath) Then
+        Set GetFiles = col
+        Exit Function
+    End If
 
     If Right(folderPath, 1) <> "\" Then
         folderPath = folderPath & "\"
@@ -465,7 +533,9 @@ Private Sub GetFilesRecursive_Add( _
 
     ' ファイル
     For Each file In folder.Files
-        If file.Name Like pattern Then
+        ' Like は既定（Option Compare Binary）で大文字小文字を区別するため
+        ' ファイル名もパターンも小文字に揃えて比較する
+        If LCase(file.Name) Like LCase(pattern) Then
             col.Add file.Path
         End If
     Next file
@@ -476,10 +546,6 @@ Private Sub GetFilesRecursive_Add( _
     Next subFolder
 
 End Sub
-
-
-
-
 '######### GetTimestamp
 ' Dim ts As String: ts = GetTimestamp()
 ' Debug.Print ts   ' 2026-08-19-09-30-00
@@ -526,6 +592,8 @@ End Function
 '   mask - 検証するサブネットマスク
 ' 戻り値:
 '   有効なら True / 無効なら False
+'   全0（0.0.0.0 = /0）と全1（255.255.255.255 = /32）も有効として扱う
+'   （CIDR2Mask(0) / CIDR2Mask(32) と整合させるため）
 Function IsValidSubnetMask(ByVal mask As String) As Boolean
     Dim parts() As String
     Dim i As Integer
@@ -541,25 +609,39 @@ Function IsValidSubnetMask(ByVal mask As String) As Boolean
         num = CInt(parts(i))
         If num < 0 Or num > 255 Then Exit Function
 
-        binaryStr = binaryStr & Right("00000000" & WorksheetFunction.Dec2Bin(num), 8)
+        binaryStr = binaryStr & Dec2Bin8(num)
     Next i
 
-    ' 「1が続いた後に0が続く」パターンのみ許可
+    ' 「1が続いた後に0が続く」パターンのみ許可する
     If InStr(binaryStr, "01") > 0 Then Exit Function
-
-    ' 全部1 or 全部0は除外（必要に応じて調整）
-    If binaryStr = String(32, "1") Or binaryStr = String(32, "0") Then Exit Function
 
     IsValidSubnetMask = True
 End Function
 
-' Debug.Print IsValidNetworkAddress("192.168.0.1", "255.255.255.0")   ' True
-' Debug.Print IsValidNetworkAddress("192.168.1.1", "255.255.255.0")   ' False
+' 0〜255 を 8桁の 2進文字列に変換する
+' WorksheetFunction.Dec2Bin に依存せず自身の計算のみで求める
+Private Function Dec2Bin8(ByVal num As Integer) As String
+    Dim result As String
+    Dim i As Integer
+
+    For i = 7 To 0 Step -1
+        If (num And 2 ^ i) > 0 Then
+            result = result & "1"
+        Else
+            result = result & "0"
+        End If
+    Next i
+
+    Dec2Bin8 = result
+End Function
+
+' Debug.Print IsValidNetworkAddress("192.168.0.0", "255.255.255.0")   ' True
+' Debug.Print IsValidNetworkAddress("192.168.0.1", "255.255.255.0")   ' False
 ' 引数:
 '   ip   - 検証するIPアドレス
 '   mask - サブネットマスク
 ' 戻り値:
-'   有効なら True / 無効なら False
+'   ネットワークアドレスなら True / そうでなければ False
 Function IsValidNetworkAddress(ByVal ip As String, ByVal mask As String) As Boolean
     Dim ipParts() As String
     Dim maskParts() As String
@@ -572,7 +654,9 @@ Function IsValidNetworkAddress(ByVal ip As String, ByVal mask As String) As Bool
     maskParts = Split(mask, ".")
 
     For i = 0 To 3
-        If (CInt(ipParts(i)) And Not CInt(maskParts(i))) <> 0 Then
+        ' マスクの 0 の部分（ホストビット）が 1 ならネットワークアドレスではない
+        ' Not を使うと符号つきの負値になるため 255 - mask でホストビットを求める
+        If (CInt(ipParts(i)) And (255 - CInt(maskParts(i)))) <> 0 Then
             Exit Function
         End If
     Next i
@@ -586,10 +670,13 @@ End Function
 '   cidr - プレフィックス長（0～32）
 ' 戻り値:
 '   ドット区切りのサブネットマスク文字列
-Function CIDR2Mask(cidr As Integer) As String
+'   範囲外（0未満・32超）の場合は空文字
+Function CIDR2Mask(ByVal cidr As Integer) As String
     Dim i As Integer
     Dim mask(3) As Integer
     Dim bits As Integer
+
+    If cidr < 0 Or cidr > 32 Then Exit Function
 
     bits = cidr
 
@@ -614,11 +701,18 @@ End Function
 '   mask - ドット区切りのサブネットマスク
 ' 戻り値:
 '   プレフィックス長（0～32）
-Function Mask2CIDR(mask As String) As Integer
+'   形式不正または 1 の連続でない場合は -1
+Function Mask2CIDR(ByVal mask As String) As Integer
     Dim parts() As String
     Dim i As Integer
     Dim val As Integer
     Dim cidr As Integer
+
+    ' 形式不正・1の連続でないマスクは -1 を返す
+    If Not IsValidSubnetMask(mask) Then
+        Mask2CIDR = -1
+        Exit Function
+    End If
 
     parts = Split(mask, ".")
 
@@ -633,13 +727,7 @@ Function Mask2CIDR(mask As String) As Integer
 
     Mask2CIDR = cidr
 End Function
-
-
-
-
 '######### JaroDistance
-Option Explicit
-
 ' Jaro距離を返す。0 = 完全一致、1 = 全く異なる
 Function JaroDistance(ByVal s1 As String, ByVal s2 As String) As Double
 
@@ -738,23 +826,22 @@ End Function
 
 '######### OpenExcel
 ' Dim wb As Workbook: Set wb = OpenExcel()
+' If wb Is Nothing Then Exit Sub   ' キャンセル時は Nothing が返る
 
 Function OpenExcel() As Workbook
     Dim filename As Variant
+
+    OpenExcel = Nothing
+
     filename = Application.GetOpenFilename( _
         FileFilter:="Excelファイル (*.xls*),*.xls*,CSVファイル (*.csv),*.csv")
 
-    If filename = False Then
-        Set OpenExcel = Nothing
-        Exit Function
-    End If
+    ' キャンセル時は Boolean の False が返るため VarType で判定する
+    If VarType(filename) = vbBoolean Then Exit Function
+    If Len(filename) = 0 Then Exit Function
 
     Set OpenExcel = Workbooks.Open(filename)
 End Function
-
-
-
-
 '######### ReadUtf8Text
 ' 使用例:
 '   Dim s As String: s = ReadUtf8Text("C:\Temp\file.txt")
@@ -763,11 +850,22 @@ End Function
 '   filePath - 読み込むファイルのフルパス
 ' 戻り値:
 '   UTF-8 のテキスト内容を文字列で返す
-Function ReadUtf8Text(filePath As String) As String
-    
+'   ※ファイルが存在しない／読み取り失敗の場合は空文字
+' 依存:
+'   ADODB.Stream（ado moniker 経由の遅延バインド。参照設定は不要）
+Function ReadUtf8Text(ByVal filePath As String) As String
+
     Dim stm As Object
+
+    ReadUtf8Text = ""
+
+    ' ファイルが存在しない場合は空文字を返す
+    If Len(Dir(filePath)) = 0 Then Exit Function
+
+    On Error GoTo CleanUp
+
     Set stm = CreateObject("ADODB.Stream")
-    
+
     With stm
         .Type = 2
         .Charset = "UTF-8"
@@ -776,79 +874,109 @@ Function ReadUtf8Text(filePath As String) As String
         ReadUtf8Text = .ReadText
         .Close
     End With
-    
+
+CleanUp:
+    ' エラー時もストリームを確実に解放する
+    On Error Resume Next
+    If Not stm Is Nothing Then stm.Close
     Set stm = Nothing
+    On Error GoTo 0
 
 End Function
-
-
-
-
 '######### SaveAttachments
 ' Call SaveAttachments("アーカイブ", "C:\Temp", "キーワード")
 '
 ' 第1引数：メールフォルダ（ルートからのパス）
 ' 第2引数：保存先フォルダ
 ' 第3引数：添付ファイル名のキーワード
+' 注：
+'   キーワードが空文字の場合は InStr が常に 1 となり
+'   全添付ファイルを対象にしてしまうため何も保存せず終了する
+'   Outlook が利用できない環境、または保存先フォルダ /
+'   指定メールフォルダが存在しない場合は何もせず終了する
 Public Sub SaveAttachments( _
     ByVal mailFolderPath As String, _
     ByVal targetFolderPath As String, _
     ByVal keyword As String)
 
-    ' Outlook取得（既存優先）
     Dim olApp As Object
+    Dim olNamespace As Object
+    Dim olRoot As Object
+    Dim olFolder As Object
+    Dim olItems As Object
+    Dim olMail As Object
+    Dim olAttachment As Object
+    Dim fso As Object
+    Dim folders() As String
+    Dim k As Long
+    Dim i As Long
+    Dim j As Long
+    Dim savePath As String
+
+    ' キーワード未指定時は何もしない
+    If Len(keyword) = 0 Then Exit Sub
+
+    ' 保存先フォルダの末尾に "\" があるときは連結時の重複を防ぐため取り除く
+    Do While Right(targetFolderPath, 1) = "\"
+        targetFolderPath = Left(targetFolderPath, Len(targetFolderPath) - 1)
+    Loop
+    If Len(targetFolderPath) = 0 Then Exit Sub
+
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    If Not fso.FolderExists(targetFolderPath) Then Exit Sub
+
+    ' Outlook取得（既存優先）
     On Error Resume Next
     Set olApp = GetObject(, "Outlook.Application")
-    On Error GoTo 0
-    
     If olApp Is Nothing Then
+        Err.Clear
         Set olApp = CreateObject("Outlook.Application")
     End If
+    On Error GoTo 0
 
-    Dim olNamespace As Object
+    If olApp Is Nothing Then Exit Sub
+
     Set olNamespace = olApp.GetNamespace("MAPI")
 
     ' ルート取得
-    Dim olRoot As Object
     Set olRoot = olNamespace.GetDefaultFolder(6).Parent
 
     ' フォルダ解決
-    Dim olFolder As Object
     Set olFolder = olRoot
 
-    Dim folders() As String
     folders = Split(mailFolderPath, "\")
 
-    Dim k As Long
     For k = 0 To UBound(folders)
         If folders(k) <> "" Then
+            ' 存在しないフォルダを指定した場合はエラーになるため打ち切る
+            On Error Resume Next
             Set olFolder = olFolder.Folders(folders(k))
+            On Error GoTo 0
+            If olFolder Is Nothing Then Exit Sub
         End If
     Next k
 
-    ' メール処理
-    Dim i As Long
-    For i = 1 To olFolder.Items.Count
-        
-        If TypeName(olFolder.Items(i)) = "MailItem" Then
-            
-            Dim olMail As Object
-            Set olMail = olFolder.Items(i)
+    ' メール処理（Items を変数に固定し、各アクセスで再取得しない）
+    Set olItems = olFolder.Items
+
+    For i = 1 To olItems.Count
+
+        If TypeName(olItems(i)) = "MailItem" Then
+
+            Set olMail = olItems(i)
 
             If olMail.Attachments.Count > 0 Then
-                
-                Dim j As Long
+
                 For j = 1 To olMail.Attachments.Count
-                    
-                    Dim olAttachment As Object
+
                     Set olAttachment = olMail.Attachments(j)
 
                     If InStr(LCase(olAttachment.FileName), LCase(keyword)) > 0 Then
-                        
-                        Dim savePath As String
+
                         savePath = targetFolderPath & "\" & olAttachment.FileName
 
-                        If Dir(savePath) = "" Then
+                        ' 同名の既存ファイルは上書きせずスキップする
+                        If Not fso.FileExists(savePath) Then
                             olAttachment.SaveAsFile savePath
                         End If
 
@@ -859,11 +987,6 @@ Public Sub SaveAttachments( _
         End If
     Next i
 End Sub
-
-
-
-
-
 '######### SearchSheet
 ' ワークシート内の検索・値取得 統合モジュール
 ' 含まれる関数: GetColumnByHeader / GetPosition / GetValueByID
@@ -884,12 +1007,20 @@ End Sub
 ' 戻り値  : 列番号（見つからなければ0）
 '========================================
 Function GetColumnByHeader(ws As Worksheet, header As String, Optional rowNum As Long = 1) As Long
-    Dim lastCol As Long: lastCol = ws.Cells(rowNum, ws.Columns.Count).End(xlToLeft).Column
-    Dim c As Long: For c = 1 To lastCol
-        GetColumnByHeader = c
-        If ws.Cells(rowNum, c).Value = header Then Exit Function
-    Next c
+    Dim lastCol As Long
+    Dim c As Long
+
     GetColumnByHeader = 0 ' 見つからなければ0
+
+    ' 空行のときは End(xlToLeft) が 1 列目を返すため、そのまま 1 から走査する
+    lastCol = ws.Cells(rowNum, ws.Columns.Count).End(xlToLeft).Column
+
+    For c = 1 To lastCol
+        If ws.Cells(rowNum, c).Value = header Then
+            GetColumnByHeader = c
+            Exit Function
+        End If
+    Next c
 End Function
 
 
@@ -903,17 +1034,24 @@ End Function
 ' 戻り値    : Array(Y, X) 見つからなければ Array(0, 0)
 '             Y: 行番号 / X: 列番号
 ' 依存      : GetColumnByHeader（本モジュール内）
+'             ※空シートのときは Find が Nothing を返すため Array(0, 0)
+'----------------------------------------
 Function GetPosition(ws As Worksheet, searchText As String) As Variant
 
     Dim r As Long
     Dim lastRow As Long
     Dim col As Long
+    Dim found As Range
 
     GetPosition = Array(0, 0)
 
-    lastRow = ws.Cells.Find("*", _
-                            SearchOrder:=xlByRows, _
-                            SearchDirection:=xlPrevious).Row
+    ' 空シートのときは Find が Nothing を返すため .Row でエラーになる
+    Set found = ws.Cells.Find("*", _
+                              SearchOrder:=xlByRows, _
+                              SearchDirection:=xlPrevious)
+    If found Is Nothing Then Exit Function
+
+    lastRow = found.Row
 
     For r = 1 To lastRow
 
@@ -941,32 +1079,46 @@ End Function
 ' targetHeader : 取得したい列の見出し名
 ' headerRow    : 見出し行番号（省略可、通常1）
 ' 戻り値       : 該当セルの値（見つからなければ""）
+'                IDは文字列化して比較するため、数値/文字列の型差は吸収される
 ' 依存         : GetColumnByHeader（本モジュール内）
+'                Application.WorksheetFunction.CountA
 '========================================
 Function GetValueByID(ws As Worksheet, _
                              idHeader As String, _
                              idValue As Variant, _
                              targetHeader As String, _
                              Optional headerRow As Long = 1) As Variant
+
+    Dim idCol     As Long
+    Dim targetCol As Long
+    Dim lastRow   As Long
+    Dim r         As Long
+    Dim cellValue As Variant
+    Dim found     As Variant
+
     GetValueByID = ""
-    
-    Dim idCol     As Long: idCol     = GetColumnByHeader(ws, idHeader, headerRow)
-    Dim targetCol As Long: targetCol = GetColumnByHeader(ws, targetHeader, headerRow)
-    If idCol = 0 Or targetCol = 0 Then Exit Function    
 
-    Dim lastRow As Long: lastRow = ws.Cells(ws.Rows.Count, idCol).End(xlUp).Row
+    idCol     = GetColumnByHeader(ws, idHeader, headerRow)
+    targetCol = GetColumnByHeader(ws, targetHeader, headerRow)
+    If idCol = 0 Or targetCol = 0 Then Exit Function
 
-    Dim r As Long: For r = headerRow + 1 To lastRow
-        If Not IsError(ws.Cells(r, idCol).Value) Then ' エラー値回避
-            If ws.Cells(r, idCol).Value = idValue Then
-                GetValueByID = ws.Cells(r, targetCol).Value
+    ' 空列のときは End(xlUp) が 1 行目を返すためデータなしとして扱う
+    If Application.WorksheetFunction.CountA(ws.Columns(idCol)) = 0 Then Exit Function
+
+    lastRow = ws.Cells(ws.Rows.Count, idCol).End(xlUp).Row
+
+    For r = headerRow + 1 To lastRow
+        cellValue = ws.Cells(r, idCol).Value
+        If Not IsError(cellValue) Then ' エラー値回避
+            ' Variant 同士でも型の差で比較が False になるため文字列化して比較する
+            If CStr(cellValue) = CStr(idValue) Then
+                found = ws.Cells(r, targetCol).Value
+                If Not IsError(found) Then GetValueByID = found
                 Exit Function
             End If
         End If
     Next r
 End Function
-
-
 '######### SelectFolder
 ' 使用例:
 '   Dim path As String: path = SelectFolder()
@@ -1001,15 +1153,35 @@ End Function
 '   Scripting.Dictionary
 '     Key  : セルの値（文字列化）
 '     Item : その値が最後に現れた行番号
+'   ※同じ値が複数ある場合は最後の行番号で上書きされる
+'   ※空列のときは空の Dictionary を返す
+'   ※エラー値（#N/A など）は除外される
+' 依存:
+'   Application.WorksheetFunction.CountA
 Function TheHash(ws As Worksheet, keyIndex As Long) As Object
     Dim myHash As Object: Set myHash = CreateObject("Scripting.Dictionary")
 
     Dim i As Long
     Dim key As String
+    Dim value As Variant
+    Dim lastRow As Long
 
-    For i = 1 To ws.Cells(ws.Rows.Count, keyIndex).End(xlUp).Row
-        key = CStr(ws.Cells(i, keyIndex).Value)
-        myHash(key) = i
+    ' 空列のときは End(xlUp) が 1 行目を返すためデータなしとして扱う
+    If Application.WorksheetFunction.CountA(ws.Columns(keyIndex)) = 0 Then
+        Set TheHash = myHash
+        Exit Function
+    End If
+
+    lastRow = ws.Cells(ws.Rows.Count, keyIndex).End(xlUp).Row
+
+    For i = 1 To lastRow
+        value = ws.Cells(i, keyIndex).Value
+        ' エラー値は CStr できないため除外する
+        If Not IsError(value) Then
+            key = CStr(value)
+            myHash(key) = i
+        End If
     Next i
+
     Set TheHash = myHash
 End Function

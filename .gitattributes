@@ -1,0 +1,19 @@
+# VBA のソースは VBE と同じ CRLF で保持する
+*.bas text eol=crlf
+
+# 生成される結合版も CRLF
+module.bas text eol=crlf
+
+# テキストは改行コードの揺れを git が正規化する
+*.md text eol=lf
+*.markdown text eol=lf
+*.yml text eol=lf
+*.rb text eol=lf
+*.sh text eol=lf
+*.html text eol=lf
+
+# バイナリ扱い
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary

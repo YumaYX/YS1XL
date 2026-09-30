@@ -37,6 +37,8 @@ npm install -g @modelcontextprotocol/server-filesystem
 
 #### ~/.config/opencode/opencode.json
 
+`/work` は AIエージェントに許可する作業ディレクトリ。環境に合わせて変更すること。
+
 ```json
 {
   "mcp": {

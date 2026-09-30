@@ -31,7 +31,7 @@ Application.Wait Now + TimeValue("00:00:02")
 ### セル内容削除
 
 ```vb
-worksheet.Cells.clear
+Worksheet.Cells.Clear
 ```
 
 ### セル自体の削除（詰める）
@@ -66,7 +66,7 @@ ElseIf 条件 Then
     '処理
 Else
     '処理
-End if
+End If
 ```
 
 ### For
@@ -106,18 +106,32 @@ Sub f2 (ByRef str As String)
   'Debug.Print(str)
 End Sub
 
-str="hello"
+str = "hello"
 Call f2(str)
 ```
 
 ### 返り値ありパターン
 
-`as 型`をつけ、最後に**関数名へ代入**。`Set`がいるやつは`Set`。
+`As 型`をつけ、最後に**関数名へ代入**する。`Set` が必要なのはオブジェクトを返す場合。
+`Sub` は値を返せないため、必ず `Function` を使う。
 
 ```vb
-Sub f1 () as String
+Function f1() As String
   f1 = "hello"
-End Sub
+End Function
+
+Debug.Print f1()
+```
+
+オブジェクトを返す場合:
+
+```vb
+Function f2() As Object
+  Set f2 = CreateObject("Scripting.Dictionary")
+End Function
+
+Dim d As Object
+Set d = f2()
 ```
 
 ### 注意・その他
@@ -167,7 +181,7 @@ Next i
 ## Hash
 
 ```vb
-Dim dic as Object
+Dim dic As Object
 Set dic = CreateObject("Scripting.Dictionary")
 'dic.Item(1) = "a"
 dic.Add("key", value)
@@ -222,14 +236,14 @@ lastCol = Worksheets(sheet_name).Cells(1, Columns.Count).End(xlToLeft).Column
 
 ## Workbook
 
-宣言1
+宣言1：２行
 
 ```vb
-Dim wb as WorkBook
+Dim wb As Workbook
 Set wb = Workbooks("Book1.xlsx")
 ```
 
-宣言2
+宣言2：１行
 
 ```vb
 Dim wb As Workbook: Set wb = Workbooks("Book1.xlsx")
@@ -253,10 +267,16 @@ Debug.Print (wb.Worksheets(ws.Name).Cells(1,1).Value)
 
 ### ファイルを開く
 
+`GetOpenFilename` はキャンセル時に `Boolean` の `False` を返す。
+`String` 型の変数に代入すると `"False"` という文字列になるため、
+`Variant` のまま受け取って `VarType` で判定するのが確実。
+
 ```vb
-Dim filename As String
+Dim filename As Variant
 filename = Application.GetOpenFilename(FileFilter:="Excelファイル,*.xls*,CSVファイル,*.csv")
-If filename = "False" Then Exit Sub ' キャンセル対応
+
+If VarType(filename) = vbBoolean Then Exit Sub ' キャンセル対応
+
 Dim wb As Workbook
 Set wb = Workbooks.Open(filename)
 Dim ws As Worksheet
@@ -307,32 +327,44 @@ End If
 
 ```vb
 Sub OutputColumn()
-  Dim column As Long: column = ActiveCell.column
   Dim ws As Worksheet: Set ws = ActiveSheet
-  Dim max_row As Long: max_row = ws.Cells(Rows.Count, column).End(xlUp).Row
+  Dim column As Long: column = ws.Cells(1, 1).Column
 
-  Dim output_filename As String
-  output_filename = ws.Name + "_" + Format(Time, "hhmmss") + ".txt"
-  output_filename = Replace(output_filename, " ", "")
+  Dim maxRow As Long
+  maxRow = ws.Cells(Rows.Count, column).End(xlUp).Row
 
-  Open output_filename For Output As #1
-  Dim cell_val As String
-  For i = 1 To max_row
-    cell_val = ws.Cells(i, column).Value
-    If Len(cell_val) <> 0 Then
-      Print #1, cell_val
+  ' 文字列連結は + ではなく & を使う
+  Dim outputFilename As String
+  outputFilename = ws.Name & "_" & Format(Time, "hhmmss") & ".txt"
+  outputFilename = Replace(outputFilename, " ", "")
+
+  Dim fNum As Integer: fNum = FreeFile
+  Open outputFilename For Output As #fNum
+
+  Dim cellVal As Variant
+  Dim i As Long
+  For i = 1 To maxRow
+    cellVal = ws.Cells(i, column).Value
+    If Len(cellVal) <> 0 Then
+      Print #fNum, cellVal
     End If
-  Next
-  Close #1
+  Next i
+
+  Close #fNum
 End Sub
 ```
+
+> 注: 文字列の連結に `+` を使うと、`+` が数値加算の意味も持つため
+> 想定外の型変換エラーが発生することがある。必ず `&` を使うこと。
+> また `For i = 1 To max_row` の `i` は必ず `Dim` で宣言すること
+> （`Option Explicit` 有効時は未宣言変数でエラーになる）。
 
 ## 出力・ダイアログ
 
 コンソール
 
 ```vb
-Debug.print("a")
+Debug.Print "a"
 ```
 
 ダイアログ
@@ -356,9 +388,10 @@ ActiveSheet.PrintOut
 
 ```vb
 Sub Saiban()
+  Dim i As Long
   For i = 12 To 34
-    SendKeys (i)
-    SendKeys ("{DOWN}")
+    SendKeys CStr(i)
+    SendKeys "{DOWN}"
   Next i
 End Sub
 ```
@@ -369,10 +402,11 @@ End Sub
 
 ```vb
 Dim i As Long
+Dim sn As String
 For i = 1 To Worksheets.Count
   sn = Worksheets(i).Name
   Worksheets(i).Name = WorksheetFunction.Substitute(sn, "before", "after")
-Next
+Next i
 ```
 
 コンソールに、シート名一覧する。
@@ -381,5 +415,5 @@ Next
 Dim i As Long
 For i = 1 To Worksheets.Count
     Debug.Print Worksheets(i).Name
-Next
+Next i
 ```

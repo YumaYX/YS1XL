@@ -6,7 +6,7 @@
 
 | 引数名 | 型 | 説明 |
 |--------|----|------|
-| toAddr | String | 宛先（カンマ区切りで複数指定可） |
+| toAddr | String | 宛先（カンマ・セミコロン区切りで複数指定可） |
 | ccAddr（省略可） | String | CC（省略時は空） |
 | bccAddr（省略可） | String | BCC（省略時は空） |
 | subjTxt（省略可） | String | タイトル（省略時は空） |
@@ -15,7 +15,12 @@
 ## 出力
 
 - 型: なし（Sub）
-- 内容: Outlook が未起動なら起動し、テキスト形式の新規メールを表示する。
+- 内容: Outlook が未起動なら起動し、テキスト形式（`olFormatPlain`）の新規メールを表示する。
+- Outlook が利用できない環境ではエラーを送出せず、何もせず終了する。
+
+## 依存
+
+- Outlook（`Outlook.Application` を `GetObject` → `CreateObject` の順で取得）
 
 ## 使用例
 

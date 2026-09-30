@@ -1,5 +1,3 @@
-Option Explicit
-
 ' Jaro距離を返す。0 = 完全一致、1 = 全く異なる
 Function JaroDistance(ByVal s1 As String, ByVal s2 As String) As Double
 

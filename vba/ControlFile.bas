@@ -1,6 +1,5 @@
 ' If Cp("C:\src\a.txt", "C:\dst\a.txt") Then Debug.Print "コピー成功"
 ' If Cp("C:\src\folder", "C:\dst\folder") Then Debug.Print "フォルダも自動判定"
-' Option Explicit
 
 '==========================================================
 ' FileSystemObject（ファイルシステム操作オブジェクト）
