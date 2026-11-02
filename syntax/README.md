@@ -417,3 +417,51 @@ For i = 1 To Worksheets.Count
     Debug.Print Worksheets(i).Name
 Next i
 ```
+
+## セル内の改行で分割
+
+選択中の1セルを、セル内の改行（`Alt + Enter`）ごとに分割し、そのセルの下へ書き込む。
+元のセルは変更しない。
+
+```vba
+Sub SplitCellByLineBreak()
+    Dim src As Range
+    Dim lines As Variant
+    Dim text As String
+    Dim i As Long
+    Dim n As Long
+
+    If Not TypeOf Selection Is Range Then
+        MsgBox "セルを1つ選択してください。", vbExclamation
+        Exit Sub
+    End If
+
+    If Selection.CountLarge <> 1 Then
+        MsgBox "セルを1つだけ選択してください。", vbExclamation
+        Exit Sub
+    End If
+
+    Set src = Selection
+
+    If IsError(src.Value) Then Exit Sub
+    text = CStr(src.Value)
+    If Len(text) = 0 Then Exit Sub
+
+    text = Replace(text, vbCrLf, vbLf)
+    text = Replace(text, vbCr, vbLf)
+    lines = Split(text, vbLf)
+
+    n = UBound(lines) - LBound(lines) + 1
+    If src.Row + n > src.Worksheet.Rows.Count Then
+        MsgBox "分割後の行がシートの最終行を超えます。", vbExclamation
+        Exit Sub
+    End If
+
+    src.Offset(1, 0).Resize(n, 1).ClearContents
+
+    For i = LBound(lines) To UBound(lines)
+        src.Offset(i - LBound(lines) + 1, 0).Value = lines(i)
+    Next i
+End Sub
+```
+
